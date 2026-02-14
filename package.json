@@ -1,0 +1,29 @@
+{
+  "name": "@openclaw/memory-muma",
+  "version": "0.1.0",
+  "description": "Multi-user multi-agent memory system for OpenClaw with ACT-R activation, Ebbinghaus forgetting, and semantic note linking",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.2",
+  "devDependencies": {
+    "@types/node": "^22.19.11",
+    "typescript": "~5.9.3"
+  }
+}
