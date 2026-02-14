@@ -1,0 +1,36 @@
+import type { Note, NoteCreate, NoteUpdate } from "./note.js";
+
+export interface VectorSearchOptions {
+  query: Float32Array;           // Query embedding
+  userId: string;                // User isolation
+  topK?: number;                 // Default 10
+  minScore?: number;             // Minimum similarity threshold
+}
+
+export interface VectorSearchResult {
+  note: Note;
+  score: number;                 // Similarity score
+}
+
+export interface MemoryStore {
+  // Lifecycle
+  initialize(): Promise<void>;
+  close(): Promise<void>;
+
+  // CRUD
+  create(note: NoteCreate): Promise<Note>;
+  read(id: string, userId: string): Promise<Note | null>;
+  update(id: string, userId: string, updates: NoteUpdate): Promise<Note | null>;
+  delete(id: string, userId: string): Promise<boolean>;
+
+  // Search
+  search(options: VectorSearchOptions): Promise<VectorSearchResult[]>;
+
+  // Bulk operations
+  listByUser(userId: string, options?: { limit?: number; offset?: number }): Promise<Note[]>;
+  countByUser(userId: string): Promise<number>;
+
+  // Metadata
+  readonly backend: "redis" | "sqlite";
+  readonly dimensions: number | null;  // null until first vector stored
+}
