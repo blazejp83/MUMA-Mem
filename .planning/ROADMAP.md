@@ -44,12 +44,14 @@ Plans:
 **Depends on**: Phase 1
 **Requirements**: SEARCH-01, SEARCH-02, SEARCH-04, PIPE-01, PIPE-02, PIPE-03, PIPE-04, PIPE-05, PIPE-06, LINK-01, LINK-02, LINK-03, LINK-04, LINK-05, PLUG-04, PLUG-06
 **Research**: Unlikely (follows well-documented Mem0 extract-then-update pattern, standard vector search)
-**Plans**: TBD
+**Plans**: 5 plans in 3 waves
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [ ] 02-01: LLM Provider Implementation (Wave 1)
+- [ ] 02-02: Read Pipeline (Wave 1, parallel with 01)
+- [ ] 02-03: Write Pipeline Core Steps (Wave 2, depends: 01)
+- [ ] 02-04: Note Linking (Wave 2, depends: 01, parallel with 03)
+- [ ] 02-05: Pipeline Orchestrator + Agent Tools + Hooks (Wave 3, depends: 02, 03, 04)
 
 ### Phase 3: Intelligence
 **Goal**: ACT-R base-level + spreading activation + stochastic noise, Ebbinghaus adaptive half-life forgetting, L1 in-process working memory with promote gate, before_agent_start context injection, session_end promotion
