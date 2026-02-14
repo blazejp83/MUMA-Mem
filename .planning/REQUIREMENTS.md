@@ -146,78 +146,78 @@ Which phases cover which requirements. Updated by create-roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| STORE-01 | — | Pending |
-| STORE-02 | — | Pending |
-| STORE-03 | — | Pending |
-| STORE-04 | — | Pending |
-| STORE-05 | — | Pending |
-| STORE-06 | — | Pending |
-| STORE-07 | — | Pending |
-| SEARCH-01 | — | Pending |
-| SEARCH-02 | — | Pending |
-| SEARCH-03 | — | Pending |
-| SEARCH-04 | — | Pending |
-| PIPE-01 | — | Pending |
-| PIPE-02 | — | Pending |
-| PIPE-03 | — | Pending |
-| PIPE-04 | — | Pending |
-| PIPE-05 | — | Pending |
-| PIPE-06 | — | Pending |
-| ACT-01 | — | Pending |
-| ACT-02 | — | Pending |
-| ACT-03 | — | Pending |
-| ACT-04 | — | Pending |
-| ACT-05 | — | Pending |
-| FORGET-01 | — | Pending |
-| FORGET-02 | — | Pending |
-| FORGET-03 | — | Pending |
-| FORGET-04 | — | Pending |
-| FORGET-05 | — | Pending |
-| LINK-01 | — | Pending |
-| LINK-02 | — | Pending |
-| LINK-03 | — | Pending |
-| LINK-04 | — | Pending |
-| LINK-05 | — | Pending |
-| WM-01 | — | Pending |
-| WM-02 | — | Pending |
-| WM-03 | — | Pending |
-| VIS-01 | — | Pending |
-| VIS-02 | — | Pending |
-| VIS-03 | — | Pending |
-| VIS-04 | — | Pending |
-| VIS-05 | — | Pending |
-| AGENT-01 | — | Pending |
-| AGENT-02 | — | Pending |
-| AGENT-03 | — | Pending |
-| AGENT-04 | — | Pending |
-| AGENT-05 | — | Pending |
-| CONSOL-01 | — | Pending |
-| CONSOL-02 | — | Pending |
-| CONSOL-03 | — | Pending |
-| CONSOL-04 | — | Pending |
-| CONSOL-05 | — | Pending |
-| CONSOL-06 | — | Pending |
-| SYNC-01 | — | Pending |
-| SYNC-02 | — | Pending |
-| SYNC-03 | — | Pending |
-| PLUG-01 | — | Pending |
-| PLUG-02 | — | Pending |
-| PLUG-03 | — | Pending |
-| PLUG-04 | — | Pending |
-| PLUG-05 | — | Pending |
-| PLUG-06 | — | Pending |
-| PLUG-07 | — | Pending |
-| PLUG-08 | — | Pending |
-| CLI-01 | — | Pending |
-| CLI-02 | — | Pending |
-| CLI-03 | — | Pending |
-| CLI-04 | — | Pending |
+| STORE-01 | Phase 1 | Pending |
+| STORE-02 | Phase 1 | Pending |
+| STORE-03 | Phase 1 | Pending |
+| STORE-04 | Phase 1 | Pending |
+| STORE-05 | Phase 1 | Pending |
+| STORE-06 | Phase 1 | Pending |
+| STORE-07 | Phase 1 | Pending |
+| SEARCH-01 | Phase 2 | Pending |
+| SEARCH-02 | Phase 2 | Pending |
+| SEARCH-03 | Phase 3 | Pending |
+| SEARCH-04 | Phase 2 | Pending |
+| PIPE-01 | Phase 2 | Pending |
+| PIPE-02 | Phase 2 | Pending |
+| PIPE-03 | Phase 2 | Pending |
+| PIPE-04 | Phase 2 | Pending |
+| PIPE-05 | Phase 2 | Pending |
+| PIPE-06 | Phase 2 | Pending |
+| ACT-01 | Phase 3 | Pending |
+| ACT-02 | Phase 3 | Pending |
+| ACT-03 | Phase 3 | Pending |
+| ACT-04 | Phase 3 | Pending |
+| ACT-05 | Phase 3 | Pending |
+| FORGET-01 | Phase 3 | Pending |
+| FORGET-02 | Phase 3 | Pending |
+| FORGET-03 | Phase 3 | Pending |
+| FORGET-04 | Phase 3 | Pending |
+| FORGET-05 | Phase 5 | Pending |
+| LINK-01 | Phase 2 | Pending |
+| LINK-02 | Phase 2 | Pending |
+| LINK-03 | Phase 2 | Pending |
+| LINK-04 | Phase 2 | Pending |
+| LINK-05 | Phase 2 | Pending |
+| WM-01 | Phase 3 | Pending |
+| WM-02 | Phase 3 | Pending |
+| WM-03 | Phase 3 | Pending |
+| VIS-01 | Phase 4 | Pending |
+| VIS-02 | Phase 4 | Pending |
+| VIS-03 | Phase 4 | Pending |
+| VIS-04 | Phase 4 | Pending |
+| VIS-05 | Phase 4 | Pending |
+| AGENT-01 | Phase 4 | Pending |
+| AGENT-02 | Phase 4 | Pending |
+| AGENT-03 | Phase 4 | Pending |
+| AGENT-04 | Phase 4 | Pending |
+| AGENT-05 | Phase 4 | Pending |
+| CONSOL-01 | Phase 5 | Pending |
+| CONSOL-02 | Phase 5 | Pending |
+| CONSOL-03 | Phase 5 | Pending |
+| CONSOL-04 | Phase 5 | Pending |
+| CONSOL-05 | Phase 5 | Pending |
+| CONSOL-06 | Phase 5 | Pending |
+| SYNC-01 | Phase 4 | Pending |
+| SYNC-02 | Phase 4 | Pending |
+| SYNC-03 | Phase 4 | Pending |
+| PLUG-01 | Phase 1 | Pending |
+| PLUG-02 | Phase 3 | Pending |
+| PLUG-03 | Phase 3 | Pending |
+| PLUG-04 | Phase 2 | Pending |
+| PLUG-05 | Phase 1 | Pending |
+| PLUG-06 | Phase 2 | Pending |
+| PLUG-07 | Phase 4 | Pending |
+| PLUG-08 | Phase 1 | Pending |
+| CLI-01 | Phase 5 | Pending |
+| CLI-02 | Phase 5 | Pending |
+| CLI-03 | Phase 5 | Pending |
+| CLI-04 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 66 total
-- Mapped to phases: 0
-- Unmapped: 66 (pending create-roadmap)
+- Mapped to phases: 66
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-13*
-*Last updated: 2026-02-13 after initial definition*
+*Last updated: 2026-02-14 after roadmap creation*
