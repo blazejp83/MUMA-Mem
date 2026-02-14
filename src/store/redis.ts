@@ -307,10 +307,74 @@ export class RedisMemoryStore implements MemoryStore {
     return count;
   }
 
-  // -- Search (stub — implemented in Task 2) --------------------------------
+  // -- Search ---------------------------------------------------------------
 
-  async search(_options: VectorSearchOptions): Promise<VectorSearchResult[]> {
-    throw new Error("search() not yet implemented — see Task 2");
+  async search(options: VectorSearchOptions): Promise<VectorSearchResult[]> {
+    if (this._dimensions === null) {
+      // No vectors stored yet, nothing to search
+      return [];
+    }
+
+    if (!this._indexCreated) {
+      await this._ensureIndex();
+    }
+
+    const topK = options.topK ?? 10;
+    const indexName = `${this._prefix}idx`;
+
+    // Escape special characters in userId for TAG filter
+    // RediSearch TAG values require escaping of: ,.<>{}[]"':;!@#$%^&*()-+=~
+    const escapedUserId = options.userId.replace(
+      /[,.<>{}\[\]"':;!@#$%^&*()\-+=~\\/ ]/g,
+      "\\$&",
+    );
+
+    // KNN query with user_id TAG pre-filter for isolation
+    const query = `@user_id:{${escapedUserId}}=>[KNN ${topK} @embedding $vec AS score]`;
+
+    // Convert query vector to Buffer
+    const vecBuffer = Buffer.from(
+      options.query.buffer,
+      options.query.byteOffset,
+      options.query.byteLength,
+    );
+
+    const results = await this._client.ft.search(indexName, query, {
+      PARAMS: { vec: vecBuffer },
+      SORTBY: { BY: "score", DIRECTION: "ASC" },
+      DIALECT: 2,
+    });
+
+    const searchResults: VectorSearchResult[] = [];
+
+    for (const doc of results.documents) {
+      const value = doc.value as Record<string, string>;
+
+      // The score field is injected by the KNN query
+      const score = Number(value.score ?? 1);
+
+      // Apply minScore filter (lower score = better match with COSINE)
+      // RediSearch COSINE returns distance (0 = identical), so we convert
+      // to similarity: similarity = 1 - distance
+      const similarity = 1 - score;
+      if (options.minScore !== undefined && similarity < options.minScore) {
+        continue;
+      }
+
+      // We need to read the full note since FT.SEARCH may not return
+      // all fields (especially binary embedding). Extract note ID from
+      // the document key which has format: {prefix}{userId}:note:{noteId}
+      const keyParts = doc.id.split(":note:");
+      const noteId = keyParts[keyParts.length - 1];
+      const userId = keyParts[0].slice(this._prefix.length);
+
+      const note = await this.read(noteId, userId);
+      if (note) {
+        searchResults.push({ note, score: similarity });
+      }
+    }
+
+    return searchResults;
   }
 
   // -- Private helpers -----------------------------------------------------
@@ -319,9 +383,71 @@ export class RedisMemoryStore implements MemoryStore {
     return `${this._prefix}${userId}:note:${noteId}`;
   }
 
-  /** Create the RediSearch vector index if it does not already exist. */
-  async _ensureIndex(): Promise<void> {
-    // Will be fully implemented in Task 2
+  /**
+   * Create the RediSearch vector index if it does not already exist.
+   * Uses HNSW algorithm with COSINE distance metric for vector similarity.
+   *
+   * Schema indexes:
+   * - embedding: VECTOR HNSW (for KNN search)
+   * - user_id: TAG (for user isolation filter)
+   * - domain: TAG (for domain-based filtering)
+   * - visibility: TAG (for visibility gate)
+   * - content: TEXT (for hybrid search)
+   * - activation: NUMERIC (for score-based filtering)
+   * - pinned: TAG
+   */
+  private async _ensureIndex(): Promise<void> {
+    if (this._indexCreated || this._dimensions === null) {
+      return;
+    }
+
+    const indexName = `${this._prefix}idx`;
+
+    try {
+      await this._client.ft.create(
+        indexName,
+        {
+          embedding: {
+            type: "VECTOR",
+            ALGORITHM: "HNSW",
+            TYPE: "FLOAT32",
+            DIM: this._dimensions,
+            DISTANCE_METRIC: "COSINE",
+          },
+          user_id: {
+            type: "TAG",
+          },
+          domain: {
+            type: "TAG",
+          },
+          visibility: {
+            type: "TAG",
+          },
+          content: {
+            type: "TEXT",
+          },
+          activation: {
+            type: "NUMERIC",
+            SORTABLE: true,
+          },
+          pinned: {
+            type: "TAG",
+          },
+        },
+        {
+          ON: "HASH",
+          PREFIX: this._prefix,
+        },
+      );
+    } catch (err: unknown) {
+      // "Index already exists" is expected and safe to ignore
+      const message =
+        err instanceof Error ? err.message : String(err);
+      if (!message.includes("Index already exists")) {
+        throw err;
+      }
+    }
+
     this._indexCreated = true;
   }
 }
