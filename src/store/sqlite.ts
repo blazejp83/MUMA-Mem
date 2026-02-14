@@ -351,15 +351,70 @@ export class SQLiteMemoryStore implements MemoryStore {
     return result.count;
   }
 
-  // -- Search (stub for Task 1, implemented in Task 2) ---------------------
+  // -- Search --------------------------------------------------------------
 
-  async search(_options: VectorSearchOptions): Promise<VectorSearchResult[]> {
+  async search(options: VectorSearchOptions): Promise<VectorSearchResult[]> {
     // Vec table not created yet — return empty results
     if (!this._vecTableCreated) {
       return [];
     }
 
-    throw new Error("search() not yet fully implemented — see Task 2");
+    const db = this._getDb();
+    const topK = options.topK ?? 10;
+
+    // sqlite-vec KNN query: use MATCH with raw float buffer, k = N in WHERE
+    // We fetch more candidates than needed because the user_id filter is
+    // applied after the KNN search (vec table has no user_id column).
+    const overFetchK = topK * 3;
+
+    const queryBuffer = Buffer.from(
+      options.query.buffer,
+      options.query.byteOffset,
+      options.query.byteLength,
+    );
+
+    // Two-step query: KNN from vec_notes, then join with notes for user filter
+    const rows = db
+      .prepare(
+        `
+        SELECT
+          n.rowid as note_rowid,
+          n.*,
+          v.distance
+        FROM (
+          SELECT note_rowid, distance
+          FROM vec_notes
+          WHERE embedding MATCH ?
+            AND k = ?
+        ) v
+        INNER JOIN notes n ON n.rowid = v.note_rowid
+        WHERE n.user_id = ?
+        LIMIT ?
+        `,
+      )
+      .all(queryBuffer, overFetchK, options.userId, topK) as (SqliteNoteRow & {
+      note_rowid: number;
+      distance: number;
+    })[];
+
+    const results: VectorSearchResult[] = [];
+
+    for (const row of rows) {
+      // Convert distance to similarity score (cosine distance → similarity)
+      const score = 1 - row.distance;
+
+      // Apply minScore filter
+      if (options.minScore !== undefined && score < options.minScore) {
+        continue;
+      }
+
+      const embedding = this._getEmbedding(row.note_rowid);
+      const note = deserializeRow(row, embedding);
+
+      results.push({ note, score });
+    }
+
+    return results;
   }
 
   // -- Private helpers -----------------------------------------------------
@@ -391,18 +446,26 @@ export class SQLiteMemoryStore implements MemoryStore {
     this._vecTableCreated = true;
   }
 
-  /** Insert embedding vector for a note row. */
+  /**
+   * Insert embedding vector for a note row.
+   * sqlite-vec requires BigInt for integer primary key values in bindings.
+   */
   private _insertEmbedding(noteRowid: number, embedding: Float32Array): void {
     const db = this._getDb();
     db.prepare(
       `INSERT INTO vec_notes(note_rowid, embedding) VALUES (?, ?)`,
-    ).run(noteRowid, Buffer.from(embedding.buffer, embedding.byteOffset, embedding.byteLength));
+    ).run(
+      BigInt(noteRowid),
+      Buffer.from(embedding.buffer, embedding.byteOffset, embedding.byteLength),
+    );
   }
 
   /** Delete embedding vector for a note row. */
   private _deleteEmbedding(noteRowid: number): void {
     const db = this._getDb();
-    db.prepare(`DELETE FROM vec_notes WHERE note_rowid = ?`).run(noteRowid);
+    db.prepare(`DELETE FROM vec_notes WHERE note_rowid = ?`).run(
+      BigInt(noteRowid),
+    );
   }
 
   /** Get embedding vector for a note row. Returns empty Float32Array if not found. */
@@ -414,7 +477,7 @@ export class SQLiteMemoryStore implements MemoryStore {
     const db = this._getDb();
     const row = db
       .prepare(`SELECT embedding FROM vec_notes WHERE note_rowid = ?`)
-      .get(noteRowid) as { embedding: Buffer } | undefined;
+      .get(BigInt(noteRowid)) as { embedding: Buffer } | undefined;
 
     if (!row || !row.embedding) {
       return new Float32Array(0);
