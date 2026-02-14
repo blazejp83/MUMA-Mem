@@ -146,13 +146,13 @@ Which phases cover which requirements. Updated by create-roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| STORE-01 | Phase 1 | Pending |
-| STORE-02 | Phase 1 | Pending |
-| STORE-03 | Phase 1 | Pending |
-| STORE-04 | Phase 1 | Pending |
-| STORE-05 | Phase 1 | Pending |
-| STORE-06 | Phase 1 | Pending |
-| STORE-07 | Phase 1 | Pending |
+| STORE-01 | Phase 1 | Complete |
+| STORE-02 | Phase 1 | Complete |
+| STORE-03 | Phase 1 | Complete |
+| STORE-04 | Phase 1 | Complete |
+| STORE-05 | Phase 1 | Complete |
+| STORE-06 | Phase 1 | Complete |
+| STORE-07 | Phase 1 | Complete |
 | SEARCH-01 | Phase 2 | Pending |
 | SEARCH-02 | Phase 2 | Pending |
 | SEARCH-03 | Phase 3 | Pending |
@@ -200,14 +200,14 @@ Which phases cover which requirements. Updated by create-roadmap.
 | SYNC-01 | Phase 4 | Pending |
 | SYNC-02 | Phase 4 | Pending |
 | SYNC-03 | Phase 4 | Pending |
-| PLUG-01 | Phase 1 | Pending |
+| PLUG-01 | Phase 1 | Complete |
 | PLUG-02 | Phase 3 | Pending |
 | PLUG-03 | Phase 3 | Pending |
 | PLUG-04 | Phase 2 | Pending |
-| PLUG-05 | Phase 1 | Pending |
+| PLUG-05 | Phase 1 | Complete |
 | PLUG-06 | Phase 2 | Pending |
 | PLUG-07 | Phase 4 | Pending |
-| PLUG-08 | Phase 1 | Pending |
+| PLUG-08 | Phase 1 | Complete |
 | CLI-01 | Phase 5 | Pending |
 | CLI-02 | Phase 5 | Pending |
 | CLI-03 | Phase 5 | Pending |
