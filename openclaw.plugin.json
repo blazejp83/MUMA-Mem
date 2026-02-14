@@ -1,0 +1,97 @@
+{
+  "id": "memory-muma",
+  "name": "MUMA-Mem",
+  "description": "Multi-user multi-agent memory with ACT-R activation, Ebbinghaus forgetting, and semantic note linking",
+  "version": "0.1.0",
+  "kind": "memory",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "redis": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string", "default": "redis://localhost:6379" },
+          "prefix": { "type": "string", "default": "muma:" }
+        }
+      },
+      "sqlite": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "description": "SQLite database file path. Defaults to ~/.openclaw/memory-muma.db" }
+        }
+      },
+      "embedding": {
+        "type": "object",
+        "properties": {
+          "provider": { "type": "string", "enum": ["local", "openai"], "default": "local" },
+          "model": { "type": "string", "default": "Xenova/all-MiniLM-L6-v2" },
+          "apiKey": { "type": "string" },
+          "baseUrl": { "type": "string" },
+          "dimensions": { "type": "number" }
+        }
+      },
+      "llm": {
+        "type": "object",
+        "properties": {
+          "provider": { "type": "string" },
+          "model": { "type": "string" },
+          "apiKey": { "type": "string" },
+          "baseUrl": { "type": "string" },
+          "temperature": { "type": "number", "default": 0.7 },
+          "maxTokens": { "type": "number", "default": 1024 }
+        }
+      },
+      "activation": {
+        "type": "object",
+        "properties": {
+          "contextWeight": { "type": "number", "default": 11.0 },
+          "noiseStddev": { "type": "number", "default": 1.2 },
+          "decayParameter": { "type": "number", "default": 0.5 },
+          "retrievalThreshold": { "type": "number", "default": 0.0 }
+        }
+      },
+      "decay": {
+        "type": "object",
+        "properties": {
+          "sweepIntervalMinutes": { "type": "number", "default": 60 },
+          "pruneThreshold": { "type": "number", "default": -2.0 },
+          "hardPruneThreshold": { "type": "number", "default": -5.0 },
+          "minAgeHours": { "type": "number", "default": 72 },
+          "maxAgeHours": { "type": "number", "default": 720 }
+        }
+      },
+      "visibility": {
+        "type": "object",
+        "properties": {
+          "defaultVisibility": { "type": "string", "enum": ["open", "scoped", "private", "user-only"], "default": "scoped" },
+          "domainRules": { "type": "object", "additionalProperties": { "type": "string", "enum": ["open", "scoped", "private", "user-only"] } },
+          "domainBoost": { "type": "number", "default": 1.0 }
+        }
+      },
+      "agentMemory": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "domains": { "type": "array", "items": { "type": "string" } },
+            "canSeePrivate": { "type": "boolean", "default": false }
+          },
+          "required": ["domains"]
+        }
+      },
+      "defaultAgentMemory": {
+        "type": "object",
+        "properties": {
+          "domains": { "type": "array", "items": { "type": "string" }, "default": ["*"] },
+          "canSeePrivate": { "type": "boolean", "default": false }
+        }
+      }
+    }
+  },
+  "uiHints": {
+    "redis.url": { "label": "Redis URL", "placeholder": "redis://localhost:6379" },
+    "embedding.apiKey": { "label": "Embedding API Key", "sensitive": true },
+    "llm.apiKey": { "label": "LLM API Key", "sensitive": true }
+  }
+}
