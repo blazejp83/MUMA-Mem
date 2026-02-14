@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01: Scaffolding + Core Types + Plugin Manifest (Wave 1)
 - [x] 01-02: Embedding Provider (Wave 2, depends: 01)
-- [ ] 01-03: Redis Storage Backend (Wave 2, depends: 01)
+- [x] 01-03: Redis Storage Backend (Wave 2, depends: 01)
 - [ ] 01-04: SQLite Storage Backend (Wave 2, depends: 01)
 - [ ] 01-05: Plugin Shell + Integration (Wave 3, depends: 02, 03, 04)
 
@@ -94,7 +94,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 2/5 | In progress | - |
+| 1. Foundation | 3/5 | In progress | - |
 | 2. Core Memory | 0/TBD | Not started | - |
 | 3. Intelligence | 0/TBD | Not started | - |
 | 4. Multi-Agent | 0/TBD | Not started | - |
