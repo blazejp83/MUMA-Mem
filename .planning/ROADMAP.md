@@ -16,7 +16,7 @@ None
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Storage abstraction (Redis + SQLite), embedding provider, plugin shell, npm package
+- [x] **Phase 1: Foundation** - Storage abstraction (Redis + SQLite), embedding provider, plugin shell, npm package
 - [ ] **Phase 2: Core Memory** - Write pipeline, read pipeline, semantic search, note linking, agent tools
 - [ ] **Phase 3: Intelligence** - ACT-R activation scoring, Ebbinghaus forgetting, L1 working memory, session hooks
 - [ ] **Phase 4: Multi-Agent** - Two-axis access model, visibility levels, cross-agent coordination, filesystem sync
@@ -37,7 +37,7 @@ Plans:
 - [x] 01-02: Embedding Provider (Wave 2, depends: 01)
 - [x] 01-03: Redis Storage Backend (Wave 2, depends: 01)
 - [x] 01-04: SQLite Storage Backend (Wave 2, depends: 01)
-- [ ] 01-05: Plugin Shell + Integration (Wave 3, depends: 02, 03, 04)
+- [x] 01-05: Plugin Shell + Integration (Wave 3, depends: 02, 03, 04)
 
 ### Phase 2: Core Memory
 **Goal**: Full write pipeline (Extract→Construct→Retrieve→Decide→Link→Evolve), read pipeline with semantic search, Zettelkasten note linking, episodic capture hooks, agent memory tools
@@ -94,7 +94,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 4/5 | In progress | - |
+| 1. Foundation | 5/5 | Complete | 2026-02-14 |
 | 2. Core Memory | 0/TBD | Not started | - |
 | 3. Intelligence | 0/TBD | Not started | - |
 | 4. Multi-Agent | 0/TBD | Not started | - |
