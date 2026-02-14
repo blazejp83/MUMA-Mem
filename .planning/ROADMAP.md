@@ -30,12 +30,14 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Requirements**: STORE-01, STORE-02, STORE-03, STORE-04, STORE-05, STORE-06, STORE-07, PLUG-01, PLUG-05, PLUG-08
 **Research**: Likely (new storage integration)
 **Research topics**: Redis Stack 7.2+ vector index config (HNSW tuning, dimension handling), sqlite-vec alpha stability, better-sqlite3 + sqlite-vec integration patterns
-**Plans**: TBD
+**Plans**: 5 plans in 3 waves
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01: Scaffolding + Core Types + Plugin Manifest (Wave 1)
+- [ ] 01-02: Embedding Provider (Wave 2, depends: 01)
+- [ ] 01-03: Redis Storage Backend (Wave 2, depends: 01)
+- [ ] 01-04: SQLite Storage Backend (Wave 2, depends: 01)
+- [ ] 01-05: Plugin Shell + Integration (Wave 3, depends: 02, 03, 04)
 
 ### Phase 2: Core Memory
 **Goal**: Full write pipeline (Extract→Construct→Retrieve→Decide→Link→Evolve), read pipeline with semantic search, Zettelkasten note linking, episodic capture hooks, agent memory tools
