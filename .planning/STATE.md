@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 ## Current Position
 
 Phase: 1 of 5 (Foundation)
-Plan: 3 of 5 in current phase
+Plan: 4 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-14 — Completed 01-03-PLAN.md
+Last activity: 2026-02-14 — Completed 01-04-PLAN.md
 
-Progress: ██░░░░░░░░ 20%
+Progress: ██░░░░░░░░ 27%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 3 min
-- Total execution time: 10 min
+- Total plans completed: 4
+- Average duration: 4 min
+- Total execution time: 16 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Foundation | 3/5 | 10 min | 3 min |
+| 1. Foundation | 4/5 | 16 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (3 min), 01-02 (3 min), 01-03 (4 min)
+- Last 5 plans: 01-01 (3 min), 01-02 (3 min), 01-03 (4 min), 01-04 (6 min)
 - Trend: Consistent
 
 ## Accumulated Context
@@ -48,6 +48,8 @@ Recent decisions affecting current work:
 | 01-02 | Dimension auto-detection from first embedding | Supports models with non-standard output sizes without explicit config |
 | 01-03 | Float32Array as raw Buffer in Redis | Zero-copy binary storage compatible with RediSearch HNSW indexing |
 | 01-03 | Deferred RediSearch index creation | Handles unknown dimensions until first embedding write |
+| 01-04 | BigInt rowid for sqlite-vec bindings | sqlite-vec requires BigInt for integer PK bindings in better-sqlite3 |
+| 01-04 | Overfetch 3x for KNN user filtering | vec_notes has no user_id; fetch 3x candidates, filter after JOIN |
 
 ### Pending Todos
 
@@ -60,5 +62,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-14
-Stopped at: Completed 01-03-PLAN.md
+Stopped at: Completed 01-04-PLAN.md
 Resume file: None
