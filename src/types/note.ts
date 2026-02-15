@@ -44,6 +44,27 @@ export interface NoteCreate {
   confidence?: number;
 }
 
+// ---------------------------------------------------------------------------
+// Conflict types (used by consolidation module and store interface)
+// ---------------------------------------------------------------------------
+
+export type ConflictType = "compatible" | "contradictory" | "subsumes" | "ambiguous";
+
+export interface MemoryConflict {
+  id: string;              // UUID
+  noteIdA: string;
+  noteIdB: string;
+  type: ConflictType;
+  description: string;     // LLM explanation of the conflict
+  resolved: boolean;
+  resolution?: string;     // How it was resolved
+  detectedAt: string;      // ISO 8601
+}
+
+// ---------------------------------------------------------------------------
+// Note updates
+// ---------------------------------------------------------------------------
+
 export interface NoteUpdate {
   content?: string;
   context?: string;

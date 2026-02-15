@@ -88,6 +88,20 @@ export class SQLiteMemoryStore implements MemoryStore {
       `CREATE INDEX IF NOT EXISTS idx_notes_vis ON notes(user_id, visibility)`,
     );
 
+    // Create conflicts table for consolidation
+    this._db.exec(`
+      CREATE TABLE IF NOT EXISTS conflicts (
+        id TEXT PRIMARY KEY,
+        note_id_a TEXT NOT NULL,
+        note_id_b TEXT NOT NULL,
+        type TEXT NOT NULL,
+        description TEXT NOT NULL DEFAULT '',
+        resolved INTEGER NOT NULL DEFAULT 0,
+        resolution TEXT,
+        detected_at TEXT NOT NULL
+      )
+    `);
+
     // If dimensions are known upfront, create vec table immediately
     if (this._embeddingDimensions !== undefined) {
       this._dimensions = this._embeddingDimensions;
@@ -379,20 +393,69 @@ export class SQLiteMemoryStore implements MemoryStore {
     return result.count;
   }
 
-  // -- Conflict storage (stub — full implementation deferred to 05-02) ------
+  // -- Conflict storage -----------------------------------------------------
 
-  async saveConflicts(_conflicts: MemoryConflict[]): Promise<void> {
-    // TODO: Implement SQLite conflict storage (05-02)
+  async saveConflicts(conflicts: MemoryConflict[]): Promise<void> {
+    const db = this._getDb();
+    const insert = db.prepare(`
+      INSERT OR REPLACE INTO conflicts (id, note_id_a, note_id_b, type, description, resolved, resolution, detected_at)
+      VALUES (@id, @note_id_a, @note_id_b, @type, @description, @resolved, @resolution, @detected_at)
+    `);
+
+    const insertMany = db.transaction((items: MemoryConflict[]) => {
+      for (const conflict of items) {
+        insert.run({
+          id: conflict.id,
+          note_id_a: conflict.noteIdA,
+          note_id_b: conflict.noteIdB,
+          type: conflict.type,
+          description: conflict.description,
+          resolved: conflict.resolved ? 1 : 0,
+          resolution: conflict.resolution ?? null,
+          detected_at: conflict.detectedAt,
+        });
+      }
+    });
+
+    insertMany(conflicts);
   }
 
-  async getConflicts(_options?: { resolved?: boolean; limit?: number }): Promise<MemoryConflict[]> {
-    // TODO: Implement SQLite conflict retrieval (05-02)
-    return [];
+  async getConflicts(options?: { resolved?: boolean; limit?: number }): Promise<MemoryConflict[]> {
+    const db = this._getDb();
+    const limit = options?.limit ?? 100;
+
+    let query: string;
+    let params: unknown[];
+
+    if (options?.resolved !== undefined) {
+      query = `SELECT * FROM conflicts WHERE resolved = ? ORDER BY detected_at DESC LIMIT ?`;
+      params = [options.resolved ? 1 : 0, limit];
+    } else {
+      query = `SELECT * FROM conflicts ORDER BY detected_at DESC LIMIT ?`;
+      params = [limit];
+    }
+
+    const rows = db.prepare(query).all(...params) as SqliteConflictRow[];
+
+    return rows.map((row) => ({
+      id: row.id,
+      noteIdA: row.note_id_a,
+      noteIdB: row.note_id_b,
+      type: row.type as MemoryConflict["type"],
+      description: row.description,
+      resolved: row.resolved === 1,
+      resolution: row.resolution ?? undefined,
+      detectedAt: row.detected_at,
+    }));
   }
 
-  async resolveConflict(_conflictId: string, _resolution: string): Promise<boolean> {
-    // TODO: Implement SQLite conflict resolution (05-02)
-    return false;
+  async resolveConflict(conflictId: string, resolution: string): Promise<boolean> {
+    const db = this._getDb();
+    const result = db
+      .prepare(`UPDATE conflicts SET resolved = 1, resolution = ? WHERE id = ?`)
+      .run(resolution, conflictId);
+
+    return result.changes > 0;
   }
 
   // -- Search --------------------------------------------------------------
@@ -540,6 +603,17 @@ export class SQLiteMemoryStore implements MemoryStore {
 // ---------------------------------------------------------------------------
 // Row type and deserialization
 // ---------------------------------------------------------------------------
+
+interface SqliteConflictRow {
+  id: string;
+  note_id_a: string;
+  note_id_b: string;
+  type: string;
+  description: string;
+  resolved: number;
+  resolution: string | null;
+  detected_at: string;
+}
 
 interface SqliteNoteRow {
   id: string;

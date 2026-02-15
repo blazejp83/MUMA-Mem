@@ -1,4 +1,4 @@
-import type { Note, NoteCreate, NoteUpdate } from "./note.js";
+import type { Note, NoteCreate, NoteUpdate, MemoryConflict } from "./note.js";
 
 export interface VectorSearchOptions {
   query: Float32Array;           // Query embedding
@@ -30,6 +30,11 @@ export interface MemoryStore {
   listByUser(userId: string, options?: { limit?: number; offset?: number }): Promise<Note[]>;
   listAllNotes(options?: { limit?: number; offset?: number }): Promise<Note[]>;
   countByUser(userId: string): Promise<number>;
+
+  // Conflict storage (for consolidation)
+  saveConflicts(conflicts: MemoryConflict[]): Promise<void>;
+  getConflicts(options?: { resolved?: boolean; limit?: number }): Promise<MemoryConflict[]>;
+  resolveConflict(conflictId: string, resolution: string): Promise<boolean>;
 
   // Metadata
   readonly backend: "redis" | "sqlite";
