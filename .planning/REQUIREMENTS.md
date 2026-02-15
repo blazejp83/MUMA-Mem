@@ -47,7 +47,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **FORGET-02**: Successful retrieval reinforces a memory (increases half-life)
 - [ ] **FORGET-03**: Memories below activation threshold become pruning candidates
 - [ ] **FORGET-04**: User can pin memories to exempt them from decay
-- [ ] **FORGET-05**: Hourly decay sweep recalculates activation scores system-wide
+- [x] **FORGET-05**: Hourly decay sweep recalculates activation scores system-wide
 
 ### Note Linking
 
@@ -81,12 +81,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Consolidation
 
-- [ ] **CONSOL-01**: Daily consolidation clusters related memories and generates summaries
-- [ ] **CONSOL-02**: Consolidation prunes redundant memories after summarization
-- [ ] **CONSOL-03**: Consolidation detects conflicting memories (compatible / contradictory / subsumes / ambiguous)
-- [ ] **CONSOL-04**: Consolidation distills MEMORY.md from consolidated knowledge
-- [ ] **CONSOL-05**: Original memories preserved (consolidation is never destructive)
-- [ ] **CONSOL-06**: Contradictory conflicts require user resolution; compatible conflicts auto-resolve
+- [x] **CONSOL-01**: Daily consolidation clusters related memories and generates summaries
+- [x] **CONSOL-02**: Consolidation prunes redundant memories after summarization
+- [x] **CONSOL-03**: Consolidation detects conflicting memories (compatible / contradictory / subsumes / ambiguous)
+- [x] **CONSOL-04**: Consolidation distills MEMORY.md from consolidated knowledge
+- [x] **CONSOL-05**: Original memories preserved (consolidation is never destructive)
+- [x] **CONSOL-06**: Contradictory conflicts require user resolution; compatible conflicts auto-resolve
 
 ### Filesystem Sync
 
@@ -107,10 +107,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### CLI
 
-- [ ] **CLI-01**: CLI command: `stats` — memory counts, storage usage, activation distribution
-- [ ] **CLI-02**: CLI command: `export` — JSON dump of all memories with metadata
-- [ ] **CLI-03**: CLI command: `consolidate` — trigger manual consolidation
-- [ ] **CLI-04**: CLI command: `conflicts` — list detected memory conflicts
+- [x] **CLI-01**: CLI command: `stats` — memory counts, storage usage, activation distribution
+- [x] **CLI-02**: CLI command: `export` — JSON dump of all memories with metadata
+- [x] **CLI-03**: CLI command: `consolidate` — trigger manual consolidation
+- [x] **CLI-04**: CLI command: `conflicts` — list detected memory conflicts
 
 ## v2 Requirements
 
@@ -172,7 +172,7 @@ Which phases cover which requirements. Updated by create-roadmap.
 | FORGET-02 | Phase 3 | Complete |
 | FORGET-03 | Phase 3 | Complete |
 | FORGET-04 | Phase 3 | Complete |
-| FORGET-05 | Phase 5 | Pending |
+| FORGET-05 | Phase 5 | Complete |
 | LINK-01 | Phase 2 | Complete |
 | LINK-02 | Phase 2 | Complete |
 | LINK-03 | Phase 2 | Complete |
@@ -191,12 +191,12 @@ Which phases cover which requirements. Updated by create-roadmap.
 | AGENT-03 | Phase 4 | Complete |
 | AGENT-04 | Phase 4 | Complete |
 | AGENT-05 | Phase 4 | Complete |
-| CONSOL-01 | Phase 5 | Pending |
-| CONSOL-02 | Phase 5 | Pending |
-| CONSOL-03 | Phase 5 | Pending |
-| CONSOL-04 | Phase 5 | Pending |
-| CONSOL-05 | Phase 5 | Pending |
-| CONSOL-06 | Phase 5 | Pending |
+| CONSOL-01 | Phase 5 | Complete |
+| CONSOL-02 | Phase 5 | Complete |
+| CONSOL-03 | Phase 5 | Complete |
+| CONSOL-04 | Phase 5 | Complete |
+| CONSOL-05 | Phase 5 | Complete |
+| CONSOL-06 | Phase 5 | Complete |
 | SYNC-01 | Phase 4 | Complete |
 | SYNC-02 | Phase 4 | Complete |
 | SYNC-03 | Phase 4 | Complete |
@@ -208,10 +208,10 @@ Which phases cover which requirements. Updated by create-roadmap.
 | PLUG-06 | Phase 2 | Complete |
 | PLUG-07 | Phase 4 | Complete |
 | PLUG-08 | Phase 1 | Complete |
-| CLI-01 | Phase 5 | Pending |
-| CLI-02 | Phase 5 | Pending |
-| CLI-03 | Phase 5 | Pending |
-| CLI-04 | Phase 5 | Pending |
+| CLI-01 | Phase 5 | Complete |
+| CLI-02 | Phase 5 | Complete |
+| CLI-03 | Phase 5 | Complete |
+| CLI-04 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 66 total
@@ -220,4 +220,4 @@ Which phases cover which requirements. Updated by create-roadmap.
 
 ---
 *Requirements defined: 2026-02-13*
-*Last updated: 2026-02-15 after Phase 4 completion*
+*Last updated: 2026-02-15 after Phase 5 completion*
