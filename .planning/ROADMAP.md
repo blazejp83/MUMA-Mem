@@ -17,7 +17,7 @@ None
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Storage abstraction (Redis + SQLite), embedding provider, plugin shell, npm package
-- [ ] **Phase 2: Core Memory** - Write pipeline, read pipeline, semantic search, note linking, agent tools
+- [x] **Phase 2: Core Memory** - Write pipeline, read pipeline, semantic search, note linking, agent tools
 - [ ] **Phase 3: Intelligence** - ACT-R activation scoring, Ebbinghaus forgetting, L1 working memory, session hooks
 - [ ] **Phase 4: Multi-Agent** - Two-axis access model, visibility levels, cross-agent coordination, filesystem sync
 - [ ] **Phase 5: Background Intelligence** - Daemon (decay sweeps, consolidation), conflict detection, CLI tools
@@ -51,7 +51,7 @@ Plans:
 - [x] 02-02: Read Pipeline (Wave 1, parallel with 01)
 - [x] 02-03: Write Pipeline Core Steps (Wave 2, depends: 01)
 - [x] 02-04: Note Linking (Wave 2, depends: 01, parallel with 03)
-- [ ] 02-05: Pipeline Orchestrator + Agent Tools + Hooks (Wave 3, depends: 02, 03, 04)
+- [x] 02-05: Pipeline Orchestrator + Agent Tools + Hooks (Wave 3, depends: 02, 03, 04)
 
 ### Phase 3: Intelligence
 **Goal**: ACT-R base-level + spreading activation + stochastic noise, Ebbinghaus adaptive half-life forgetting, L1 in-process working memory with promote gate, before_agent_start context injection, session_end promotion
@@ -97,7 +97,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 5/5 | Complete | 2026-02-14 |
-| 2. Core Memory | 4/5 | In progress | - |
+| 2. Core Memory | 5/5 | Complete | 2026-02-15 |
 | 3. Intelligence | 0/TBD | Not started | - |
 | 4. Multi-Agent | 0/TBD | Not started | - |
 | 5. Background Intelligence | 0/TBD | Not started | - |

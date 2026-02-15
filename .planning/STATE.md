@@ -5,34 +5,34 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Agents automatically receive the right memories at the right time without explicit tool calls — scoped by visibility and domain, decayed by relevance, and consolidated from episodes into durable knowledge.
-**Current focus:** Phase 2 — Core Memory
+**Current focus:** Phase 2 — Core Memory (Complete)
 
 ## Current Position
 
 Phase: 2 of 5 (Core Memory)
-Plan: 4 of 5 in current phase
-Status: In progress
-Last activity: 2026-02-15 — Completed 02-04-PLAN.md
+Plan: 5 of 5 in current phase
+Status: Phase complete
+Last activity: 2026-02-15 — Completed 02-05-PLAN.md
 
-Progress: █████░░░░░ 53%
+Progress: ██████░░░░ 59%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
+- Total plans completed: 10
 - Average duration: 4 min
-- Total execution time: 55 min
+- Total execution time: 57 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 5/5 | 19 min | 4 min |
-| 2. Core Memory | 4/5 | 36 min | 9 min |
+| 2. Core Memory | 5/5 | 38 min | 8 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-05 (3 min), 02-01 (31 min), 02-02 (1 min), 02-03 (2 min), 02-04 (2 min)
-- Trend: 02-04 fast — pure function implementations with existing patterns, no new deps
+- Last 5 plans: 02-01 (31 min), 02-02 (1 min), 02-03 (2 min), 02-04 (2 min), 02-05 (2 min)
+- Trend: 02-05 fast — orchestrator and hooks compose existing step functions, no new deps
 
 ## Accumulated Context
 
@@ -62,6 +62,8 @@ Recent decisions affecting current work:
 | 02-04 | Vector similarity only for linking (no LLM) | Fast/cheap at write time; Phase 3 activation scoring improves relevance |
 | 02-04 | Single batched LLM call in evolve | Reduces N calls to 1 for efficiency |
 | 02-04 | Graceful LLM failure in evolve (skip evolution) | Context stays as-is; no data loss on LLM error |
+| 02-05 | LLM provider guard in episodic hooks | Skip capture silently when unconfigured — supports read-only mode |
+| 02-05 | Tools registered inside gateway_start | Ensures all providers initialized before tools can execute |
 
 ### Pending Todos
 
@@ -74,5 +76,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 02-04-PLAN.md
+Stopped at: Completed 02-05-PLAN.md (Phase 2 complete)
 Resume file: None
