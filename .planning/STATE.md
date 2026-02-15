@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Agents automatically receive the right memories at the right time without explicit tool calls — scoped by visibility and domain, decayed by relevance, and consolidated from episodes into durable knowledge.
-**Current focus:** Phase 4 — Multi-Agent (In progress)
+**Current focus:** Phase 4 — Multi-Agent (Complete)
 
 ## Current Position
 
 Phase: 4 of 5 (Multi-Agent)
-Plan: 3 of 4 in current phase
-Status: In progress
-Last activity: 2026-02-15 — Completed 04-04-PLAN.md
+Plan: 4 of 4 in current phase
+Status: Phase complete
+Last activity: 2026-02-15 — Completed 04-03-PLAN.md (Phase 4 complete, all 4/4 done)
 
-Progress: █████████░ 94%
+Progress: █████████░ 89%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16
-- Average duration: 5 min
-- Total execution time: 69 min
+- Total plans completed: 17
+- Average duration: 4 min
+- Total execution time: 73 min
 
 **By Phase:**
 
@@ -30,11 +30,11 @@ Progress: █████████░ 94%
 | 1. Foundation | 5/5 | 19 min | 4 min |
 | 2. Core Memory | 5/5 | 38 min | 8 min |
 | 3. Intelligence | 3/3 | 9 min | 3 min |
-| 4. Multi-Agent | 3/4 | 3 min | 1 min |
+| 4. Multi-Agent | 4/4 | 7 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (2 min), 03-03 (3 min), 03-02 (4 min), 04-01 (1 min), 04-04 (3 min)
-- Trend: Phase 4 executing in parallel — wave 1 and wave 2 plans overlap
+- Last 5 plans: 03-02 (4 min), 04-01 (1 min), 04-04 (3 min), 04-02 (0 min), 04-03 (4 min)
+- Trend: Phase 4 executed in parallel — all 4 plans completed in single session
 
 ## Accumulated Context
 
@@ -79,6 +79,10 @@ Recent decisions affecting current work:
 | 04-04 | recentWrites 2s + file event 500ms debounce | Prevents sync loops between store->file and file->store |
 | 04-04 | fs.watch recursive with per-directory fallback | Recursive not supported on all Linux filesystems |
 | 04-04 | Filesystem sync non-fatal on failure | Plugin continues normally if sync init fails |
+| 04-03 | Visibility gate AFTER vector search, BEFORE activation scoring | Filter unauthorized notes before expensive ACT-R computation |
+| 04-03 | Domain rule overrides LLM-suggested visibility in construct | Config-driven authority over visibility classification |
+| 04-03 | Transactive index uses prefix matching for domain expertise | Exact + startsWith covers hierarchical domain structure |
+| 04-03 | memory.consolidate as Phase 5 placeholder | Provides tool surface now, implementation deferred |
 
 ### Pending Todos
 
@@ -91,5 +95,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 04-04-PLAN.md (3/4 Phase 4 plans done)
+Stopped at: Completed 04-03-PLAN.md (Phase 4 complete, all 4/4 done)
 Resume file: None

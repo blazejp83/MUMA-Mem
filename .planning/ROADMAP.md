@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Storage abstraction (Redis + SQLite), embedding provider, plugin shell, npm package
 - [x] **Phase 2: Core Memory** - Write pipeline, read pipeline, semantic search, note linking, agent tools
 - [x] **Phase 3: Intelligence** - ACT-R activation scoring, Ebbinghaus forgetting, L1 working memory, session hooks
-- [ ] **Phase 4: Multi-Agent** - Two-axis access model, visibility levels, cross-agent coordination, filesystem sync
+- [x] **Phase 4: Multi-Agent** - Two-axis access model, visibility levels, cross-agent coordination, filesystem sync
 - [ ] **Phase 5: Background Intelligence** - Daemon (decay sweeps, consolidation), conflict detection, CLI tools
 
 ## Phase Details
@@ -76,7 +76,7 @@ Plans:
 Plans:
 - [x] 04-01: Access Control Logic [TDD] (Wave 1)
 - [x] 04-02: Cross-Agent Event Bus (Wave 1, parallel with 01)
-- [ ] 04-03: Visibility Integration + Transactive Memory + Tools (Wave 2, depends: 01, 02)
+- [x] 04-03: Visibility Integration + Transactive Memory + Tools (Wave 2, depends: 01, 02)
 - [x] 04-04: Filesystem Sync (Wave 2, depends: 02)
 
 ### Phase 5: Background Intelligence
@@ -101,5 +101,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation | 5/5 | Complete | 2026-02-14 |
 | 2. Core Memory | 5/5 | Complete | 2026-02-15 |
 | 3. Intelligence | 3/3 | Complete | 2026-02-15 |
-| 4. Multi-Agent | 3/4 | In progress | - |
+| 4. Multi-Agent | 4/4 | Complete | 2026-02-15 |
 | 5. Background Intelligence | 0/TBD | Not started | - |
