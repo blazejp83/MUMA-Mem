@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 ## Current Position
 
 Phase: 5 of 5 (Background Intelligence)
-Plan: 1 of 4 in current phase
+Plan: 2 of 4 in current phase
 Status: In progress
-Last activity: 2026-02-15 — Completed 05-01-PLAN.md
+Last activity: 2026-02-15 — Completed 05-02-PLAN.md
 
-Progress: █████████░ 90%
+Progress: █████████░ 93%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 17
+- Total plans completed: 19
 - Average duration: 4 min
-- Total execution time: 73 min
+- Total execution time: 77 min
 
 **By Phase:**
 
@@ -87,6 +87,10 @@ Recent decisions affecting current work:
 | 05-01 | Skip pinned notes in sweep | Pinned notes are exempt from decay |
 | 05-01 | Only update store when activation changed | Avoid unnecessary write overhead |
 | 05-01 | Fire-and-forget initial sweep on startup | Errors logged, not thrown — non-blocking |
+| 05-02 | ConflictType/MemoryConflict in note.ts | Avoids circular deps between store and consolidation |
+| 05-02 | Greedy single-linkage + union-find clustering | O(n) transitive grouping with path compression |
+| 05-02 | Batch conflict detection (all pairs in one LLM call) | Reduces N LLM calls to 1 for efficiency |
+| 05-02 | Default similarity threshold 0.75 | Balances precision vs grouping for clustering |
 
 ### Pending Todos
 
@@ -99,5 +103,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 05-01-PLAN.md (1/4 Phase 5 plans done)
+Stopped at: Completed 05-02-PLAN.md (2/4 Phase 5 plans done)
 Resume file: None
