@@ -145,7 +145,7 @@ export function registerPlugin(api: any): void {
       // Filesystem sync is optional — system works without it
     }
 
-    // 7. Register agent tools (PLUG-06)
+    // 8. Register agent tools (PLUG-06 + PLUG-07)
     registerTools(api);
     api.logger.info("[muma-mem] Agent tools registered.");
 
@@ -339,6 +339,10 @@ export function registerPlugin(api: any): void {
     }
     sessions.clear();
 
+    if (transactiveIndex) {
+      transactiveIndex.clear();
+      transactiveIndex = null;
+    }
     if (filesystemSync) {
       await filesystemSync.stop();
       filesystemSync = null;
