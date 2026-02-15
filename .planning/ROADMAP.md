@@ -47,7 +47,7 @@ Plans:
 **Plans**: 5 plans in 3 waves
 
 Plans:
-- [ ] 02-01: LLM Provider Implementation (Wave 1)
+- [x] 02-01: LLM Provider Implementation (Wave 1)
 - [ ] 02-02: Read Pipeline (Wave 1, parallel with 01)
 - [ ] 02-03: Write Pipeline Core Steps (Wave 2, depends: 01)
 - [ ] 02-04: Note Linking (Wave 2, depends: 01, parallel with 03)
@@ -97,7 +97,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 5/5 | Complete | 2026-02-14 |
-| 2. Core Memory | 0/TBD | Not started | - |
+| 2. Core Memory | 1/5 | In progress | - |
 | 3. Intelligence | 0/TBD | Not started | - |
 | 4. Multi-Agent | 0/TBD | Not started | - |
 | 5. Background Intelligence | 0/TBD | Not started | - |

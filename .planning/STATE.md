@@ -10,28 +10,29 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 ## Current Position
 
 Phase: 2 of 5 (Core Memory)
-Plan: 0 of 5 in current phase
-Status: Phase planned, ready for execution
-Last activity: 2026-02-14 — Phase 2 planned (5 plans in 3 waves)
+Plan: 1 of 5 in current phase
+Status: In progress
+Last activity: 2026-02-15 — Completed 02-01-PLAN.md
 
-Progress: ███░░░░░░░ 33%
+Progress: ████░░░░░░ 35%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 4 min
-- Total execution time: 19 min
+- Total plans completed: 6
+- Average duration: 6 min
+- Total execution time: 50 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 5/5 | 19 min | 4 min |
+| 2. Core Memory | 1/5 | 31 min | 31 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (3 min), 01-02 (3 min), 01-03 (4 min), 01-04 (6 min), 01-05 (3 min)
-- Trend: Consistent
+- Last 5 plans: 01-02 (3 min), 01-03 (4 min), 01-04 (6 min), 01-05 (3 min), 02-01 (31 min)
+- Trend: 02-01 longer due to first plan in new phase
 
 ## Accumulated Context
 
@@ -52,6 +53,8 @@ Recent decisions affecting current work:
 | 01-04 | Overfetch 3x for KNN user filtering | vec_notes has no user_id; fetch 3x candidates, filter after JOIN |
 | 01-05 | api typed as any for plugin registration | Avoids hard dependency on openclaw/plugin-sdk at runtime |
 | 01-05 | Module-level singleton state for gateway lifetime | getStore()/getEmbeddingProvider() accessible across modules |
+| 02-01 | LLM provider is optional (null when unconfigured) | Supports read-only users without LLM API keys |
+| 02-01 | No streaming or retry in LLM provider | Pipeline steps are single-shot; callers can retry |
 
 ### Pending Todos
 
@@ -63,6 +66,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-14
-Stopped at: Completed 01-05-PLAN.md (Phase 1 complete)
+Last session: 2026-02-15
+Stopped at: Completed 02-01-PLAN.md
 Resume file: None
