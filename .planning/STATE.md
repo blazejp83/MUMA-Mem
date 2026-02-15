@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Agents automatically receive the right memories at the right time without explicit tool calls — scoped by visibility and domain, decayed by relevance, and consolidated from episodes into durable knowledge.
-**Current focus:** Phase 5 — Background Intelligence (Planning complete)
+**Current focus:** Phase 5 — Background Intelligence (In progress)
 
 ## Current Position
 
 Phase: 5 of 5 (Background Intelligence)
-Plan: 0 of 4 in current phase
-Status: Phase planned, ready for execution
-Last activity: 2026-02-15 — Planned Phase 5 (4 plans in 2 waves)
+Plan: 1 of 4 in current phase
+Status: In progress
+Last activity: 2026-02-15 — Completed 05-01-PLAN.md
 
-Progress: █████████░ 89%
+Progress: █████████░ 90%
 
 ## Performance Metrics
 
@@ -83,6 +83,10 @@ Recent decisions affecting current work:
 | 04-03 | Domain rule overrides LLM-suggested visibility in construct | Config-driven authority over visibility classification |
 | 04-03 | Transactive index uses prefix matching for domain expertise | Exact + startsWith covers hierarchical domain structure |
 | 04-03 | memory.consolidate as Phase 5 placeholder | Provides tool surface now, implementation deferred |
+| 05-01 | Base-level activation only in background sweep | No spreading/noise without query context |
+| 05-01 | Skip pinned notes in sweep | Pinned notes are exempt from decay |
+| 05-01 | Only update store when activation changed | Avoid unnecessary write overhead |
+| 05-01 | Fire-and-forget initial sweep on startup | Errors logged, not thrown — non-blocking |
 
 ### Pending Todos
 
@@ -95,5 +99,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 04-03-PLAN.md (Phase 4 complete, all 4/4 done)
+Stopped at: Completed 05-01-PLAN.md (1/4 Phase 5 plans done)
 Resume file: None
