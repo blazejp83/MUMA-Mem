@@ -8,3 +8,5 @@ export { detectConflicts, resolveConflicts } from "./conflicts.js";
 
 export { consolidate } from "./consolidate.js";
 export type { ConsolidationReport } from "./consolidate.js";
+
+export { distillMemoryMd, writeMemoryMdFile } from "./distill.js";
