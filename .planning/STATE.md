@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 ## Current Position
 
 Phase: 5 of 5 (Background Intelligence)
-Plan: 2 of 4 in current phase
+Plan: 3 of 4 in current phase
 Status: In progress
-Last activity: 2026-02-15 — Completed 05-02-PLAN.md
+Last activity: 2026-02-15 — Completed 05-03-PLAN.md
 
-Progress: █████████░ 93%
+Progress: █████████░ 95%
 
 ## Performance Metrics
 
@@ -91,6 +91,10 @@ Recent decisions affecting current work:
 | 05-02 | Greedy single-linkage + union-find clustering | O(n) transitive grouping with path compression |
 | 05-02 | Batch conflict detection (all pairs in one LLM call) | Reduces N LLM calls to 1 for efficiency |
 | 05-02 | Default similarity threshold 0.75 | Balances precision vs grouping for clustering |
+| 05-03 | Categorize notes by activation level for distillation | Active (>2.0), Background (0-2.0), Consolidated (tagged) |
+| 05-03 | Daily scheduler first run after 24h (not immediate) | Sweep handles immediate needs; avoid redundant work on startup |
+| 05-03 | Per-user error isolation in consolidation scheduler | One user's failure doesn't stop others |
+| 05-03 | memory.consolidate guards on LLM provider | Consolidation requires LLM; clear error if unconfigured |
 
 ### Pending Todos
 
@@ -103,5 +107,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 05-02-PLAN.md (2/4 Phase 5 plans done)
+Stopped at: Completed 05-03-PLAN.md (3/4 Phase 5 plans done)
 Resume file: None
