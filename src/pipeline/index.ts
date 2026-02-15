@@ -17,3 +17,6 @@ export type { LinkResult } from "./link.js";
 
 export { evolve } from "./evolve.js";
 export type { EvolveResult } from "./evolve.js";
+
+export { write } from "./write.js";
+export type { WriteOptions, WriteResult } from "./write.js";
