@@ -10,3 +10,5 @@ export {
   reinforceHalfLife,
   isPruningCandidate,
 } from "./decay.js";
+
+export { trackAccess } from "./tracking.js";
