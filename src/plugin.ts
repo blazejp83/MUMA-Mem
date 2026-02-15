@@ -12,7 +12,10 @@ import type { MemoryStore } from "./types/store.js";
 import type { EmbeddingProvider } from "./embedding/types.js";
 import type { LLMProvider } from "./llm/provider.js";
 import type { EventBus } from "./sync/index.js";
-import { createEventBus } from "./sync/index.js";
+import { createEventBus, FilesystemSync } from "./sync/index.js";
+import { TransactiveMemoryIndex, createTransactiveIndex } from "./access/index.js";
+import * as os from "node:os";
+import * as path from "node:path";
 
 // Module-level state (lives for gateway lifetime)
 let store: MemoryStore | null = null;
@@ -20,6 +23,8 @@ let embeddingProvider: EmbeddingProvider | null = null;
 let llmProvider: LLMProvider | null = null;
 let mumaConfig: MumaConfig | null = null;
 let eventBus: EventBus | null = null;
+let transactiveIndex: TransactiveMemoryIndex | null = null;
+let filesystemSync: FilesystemSync | null = null;
 
 // Per-session L1 working memory stores
 const sessions: Map<string, WorkingMemory> = new Map();
@@ -71,6 +76,10 @@ export function getEventBus(): EventBus | null {
   return eventBus;
 }
 
+export function getTransactiveIndex(): TransactiveMemoryIndex | null {
+  return transactiveIndex;
+}
+
 export function registerPlugin(api: any): void {
   // Parse and validate config
   const rawConfig = api.pluginConfig ?? {};
@@ -113,7 +122,30 @@ export function registerPlugin(api: any): void {
       // Event bus is optional — system works without it
     }
 
-    // 6. Register agent tools (PLUG-06)
+    // 6. Create transactive memory index (AGENT-04)
+    transactiveIndex = createTransactiveIndex();
+    if (eventBus) {
+      eventBus.subscribe((event) => {
+        if (event.type === "memory:write" || event.type === "memory:update") {
+          transactiveIndex?.recordWrite(event.agentId, event.domain);
+        }
+      });
+    }
+    api.logger.info("[muma-mem] Transactive memory index initialized.");
+
+    // 7. Start filesystem sync for human-readable memory files (SYNC-01)
+    try {
+      const syncDir = path.join(os.homedir(), "clawd", "memory");
+      filesystemSync = new FilesystemSync(syncDir);
+      await filesystemSync.start(store, eventBus);
+      await filesystemSync.initialSync(store);
+      api.logger.info(`[muma-mem] Filesystem sync: ${syncDir}`);
+    } catch (err) {
+      api.logger.warn(`[muma-mem] Filesystem sync init failed (non-fatal): ${err}`);
+      // Filesystem sync is optional — system works without it
+    }
+
+    // 7. Register agent tools (PLUG-06)
     registerTools(api);
     api.logger.info("[muma-mem] Agent tools registered.");
 
@@ -307,6 +339,10 @@ export function registerPlugin(api: any): void {
     }
     sessions.clear();
 
+    if (filesystemSync) {
+      await filesystemSync.stop();
+      filesystemSync = null;
+    }
     if (eventBus) {
       await eventBus.close();
       eventBus = null;

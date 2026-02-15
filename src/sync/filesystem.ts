@@ -1,6 +1,9 @@
 import * as fs from "node:fs/promises";
+import { watch, type FSWatcher } from "node:fs";
 import * as path from "node:path";
 import type { Note, NoteUpdate } from "../types/note.js";
+import type { MemoryStore } from "../types/store.js";
+import type { EventBus, MemoryEvent } from "./events.js";
 
 // ---------------------------------------------------------------------------
 // Path helpers
@@ -251,5 +254,258 @@ export async function deleteNoteFile(userId: string, noteId: string, baseDir: st
     await fs.unlink(filePath);
   } catch (err: any) {
     if (err.code !== "ENOENT") throw err;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// FilesystemSync — Bidirectional sync between MemoryStore and filesystem
+// ---------------------------------------------------------------------------
+
+/**
+ * Bidirectional sync between the memory store and ~/clawd/memory/ as
+ * human-readable markdown files. Changes in either direction propagate
+ * automatically:
+ *
+ * - Store -> File: Event bus events trigger writeNoteToFile / deleteNoteFile
+ * - File -> Store: fs.watch detects edits, deserializes, and store.update()
+ *
+ * Debounce prevents sync loops:
+ * - recentWrites: Set of noteIds recently written BY the sync (store->file).
+ *   Cleared after 2000ms. Prevents re-importing our own writes.
+ * - debounceTimers: Map of filePath->setTimeout. On fs.watch event, clear
+ *   previous timer, set new 500ms timer. Prevents multiple events per save.
+ */
+export class FilesystemSync {
+  private baseDir: string;
+  private watchers: FSWatcher[] = [];
+  private unsubscribeEventBus: (() => void) | null = null;
+  private debounceTimers: Map<string, ReturnType<typeof setTimeout>> = new Map();
+  private recentWrites: Set<string> = new Set();
+
+  constructor(baseDir: string) {
+    this.baseDir = baseDir;
+  }
+
+  /**
+   * Start bidirectional sync:
+   * 1. Subscribe to event bus for store->file sync
+   * 2. Start fs.watch for file->store sync
+   */
+  async start(store: MemoryStore, eventBus: EventBus | null): Promise<void> {
+    // Ensure base directory exists
+    await fs.mkdir(this.baseDir, { recursive: true });
+
+    // --- Store -> File: subscribe to event bus ---
+    if (eventBus) {
+      this.unsubscribeEventBus = eventBus.subscribe((event: MemoryEvent) => {
+        void this.handleStoreEvent(event, store);
+      });
+    }
+
+    // --- File -> Store: start filesystem watcher ---
+    await this.startWatching(store);
+  }
+
+  /**
+   * Stop all watchers, unsubscribe from event bus, clear timers.
+   */
+  async stop(): Promise<void> {
+    // Unsubscribe from event bus
+    if (this.unsubscribeEventBus) {
+      this.unsubscribeEventBus();
+      this.unsubscribeEventBus = null;
+    }
+
+    // Close all file watchers
+    for (const w of this.watchers) {
+      w.close();
+    }
+    this.watchers = [];
+
+    // Clear debounce timers
+    for (const timer of this.debounceTimers.values()) {
+      clearTimeout(timer);
+    }
+    this.debounceTimers.clear();
+    this.recentWrites.clear();
+  }
+
+  /**
+   * One-time sync: export all existing notes from store to filesystem.
+   * Used on startup to populate file tree from existing store data.
+   */
+  async initialSync(store: MemoryStore): Promise<void> {
+    try {
+      // We need to iterate users — there's no listAllUsers API, so we
+      // scan existing user directories and also sync from store for any
+      // notes. Since we can't enumerate all users from the store directly,
+      // we do a best-effort sync by checking existing user directories.
+      const entries = await fs.readdir(this.baseDir, { withFileTypes: true }).catch(() => []);
+      const userIds = new Set<string>();
+      for (const entry of entries) {
+        if (entry.isDirectory()) {
+          userIds.add(entry.name);
+        }
+      }
+
+      // For each known user, list their notes and write to files
+      for (const userId of userIds) {
+        try {
+          const notes = await store.listByUser(userId);
+          for (const note of notes) {
+            this.markRecentWrite(note.id);
+            await writeNoteToFile(note, this.baseDir);
+          }
+        } catch {
+          // Skip users that fail
+        }
+      }
+    } catch {
+      // Best-effort — don't fail startup if initial sync fails
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Store -> File: Handle event bus events
+  // -------------------------------------------------------------------------
+
+  private async handleStoreEvent(event: MemoryEvent, store: MemoryStore): Promise<void> {
+    try {
+      if (event.type === "memory:delete") {
+        this.markRecentWrite(event.noteId);
+        await deleteNoteFile(event.userId, event.noteId, this.baseDir);
+        return;
+      }
+
+      // memory:write or memory:update — read note from store and write file
+      const note = await store.read(event.noteId, event.userId);
+      if (!note) return;
+
+      this.markRecentWrite(note.id);
+      await writeNoteToFile(note, this.baseDir);
+    } catch {
+      // Non-fatal — store event handling should not crash
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // File -> Store: Watch filesystem for changes
+  // -------------------------------------------------------------------------
+
+  private async startWatching(store: MemoryStore): Promise<void> {
+    // Try recursive watching first (works on macOS and Windows,
+    // may not work on all Linux filesystems)
+    try {
+      const watcher = watch(this.baseDir, { recursive: true }, (eventType, filename) => {
+        if (filename) this.handleFileEvent(eventType, filename, store);
+      });
+      this.watchers.push(watcher);
+      return;
+    } catch {
+      // Recursive watch not supported — fall back to per-directory watching
+    }
+
+    // Fallback: watch each userId directory individually
+    await this.watchUserDirectories(store);
+  }
+
+  private async watchUserDirectories(store: MemoryStore): Promise<void> {
+    try {
+      const entries = await fs.readdir(this.baseDir, { withFileTypes: true });
+      for (const entry of entries) {
+        if (entry.isDirectory()) {
+          this.watchSingleDirectory(path.join(this.baseDir, entry.name), entry.name, store);
+        }
+      }
+    } catch {
+      // No directories to watch yet
+    }
+  }
+
+  private watchSingleDirectory(dirPath: string, userId: string, store: MemoryStore): void {
+    try {
+      const watcher = watch(dirPath, (eventType, filename) => {
+        if (filename) {
+          const relPath = path.join(userId, filename);
+          this.handleFileEvent(eventType, relPath, store);
+        }
+      });
+      this.watchers.push(watcher);
+    } catch {
+      // Can't watch this directory — skip
+    }
+  }
+
+  private handleFileEvent(eventType: string, filename: string, store: MemoryStore): void {
+    // Only watch .md files
+    if (!filename.endsWith(".md")) return;
+
+    // Extract noteId from filename: userId/noteId.md
+    const parts = filename.split(path.sep);
+    if (parts.length < 2) return;
+
+    const noteId = path.basename(parts[parts.length - 1], ".md");
+
+    // Skip if this is our own recent write
+    if (this.recentWrites.has(noteId)) return;
+
+    const filePath = path.join(this.baseDir, filename);
+
+    // Debounce: clear previous timer, set new one
+    const existing = this.debounceTimers.get(filePath);
+    if (existing) clearTimeout(existing);
+
+    this.debounceTimers.set(
+      filePath,
+      setTimeout(() => {
+        this.debounceTimers.delete(filePath);
+        void this.processFileChange(filePath, eventType, store);
+      }, 500),
+    );
+  }
+
+  private async processFileChange(filePath: string, eventType: string, store: MemoryStore): Promise<void> {
+    try {
+      // Check if file exists
+      const exists = await fs.access(filePath).then(
+        () => true,
+        () => false,
+      );
+
+      if (!exists) {
+        // File was deleted — extract userId and noteId from path
+        const rel = path.relative(this.baseDir, filePath);
+        const parts = rel.split(path.sep);
+        if (parts.length >= 2) {
+          const userId = parts[0];
+          const noteId = path.basename(parts[parts.length - 1], ".md");
+          await store.delete(noteId, userId);
+        }
+        return;
+      }
+
+      // File was changed — read and parse
+      const markdown = await fs.readFile(filePath, "utf-8");
+      const parsed = deserializeMarkdownToNoteUpdate(markdown);
+      if (!parsed) return;
+
+      const { id, userId, updates } = parsed;
+      if (!id || !userId) return;
+
+      await store.update(id, userId, updates);
+    } catch {
+      // Non-fatal — file change handling should not crash
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Debounce helpers
+  // -------------------------------------------------------------------------
+
+  private markRecentWrite(noteId: string): void {
+    this.recentWrites.add(noteId);
+    setTimeout(() => {
+      this.recentWrites.delete(noteId);
+    }, 2000);
   }
 }
