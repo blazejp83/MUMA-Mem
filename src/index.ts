@@ -9,8 +9,8 @@ export type { LLMProvider, GenerateOptions } from "./llm/index.js";
 export type { MumaConfig } from "./config.js";
 export { MumaConfigSchema } from "./config.js";
 export { getStore, getEmbeddingProvider, getLLMProvider } from "./plugin.js";
-export { search, extract, construct, retrieve, decide } from "./pipeline/index.js";
-export type { SearchOptions, SearchResult, ExtractedFacts, ConstructOptions, WriteDecision } from "./pipeline/index.js";
+export { search, extract, construct, retrieve, decide, link, evolve } from "./pipeline/index.js";
+export type { SearchOptions, SearchResult, ExtractedFacts, ConstructOptions, WriteDecision, LinkResult, EvolveResult } from "./pipeline/index.js";
 
 const memoryMumaPlugin = {
   id: "memory-muma",

@@ -11,3 +11,9 @@ export { retrieve } from "./retrieve.js";
 
 export { decide } from "./decide.js";
 export type { WriteDecision } from "./decide.js";
+
+export { link } from "./link.js";
+export type { LinkResult } from "./link.js";
+
+export { evolve } from "./evolve.js";
+export type { EvolveResult } from "./evolve.js";
