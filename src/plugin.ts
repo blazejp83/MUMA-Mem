@@ -14,6 +14,7 @@ import type { LLMProvider } from "./llm/provider.js";
 import type { EventBus } from "./sync/index.js";
 import { createEventBus, FilesystemSync } from "./sync/index.js";
 import { TransactiveMemoryIndex, createTransactiveIndex } from "./access/index.js";
+import { startSweepScheduler } from "./daemon/index.js";
 import * as os from "node:os";
 import * as path from "node:path";
 
@@ -25,6 +26,7 @@ let mumaConfig: MumaConfig | null = null;
 let eventBus: EventBus | null = null;
 let transactiveIndex: TransactiveMemoryIndex | null = null;
 let filesystemSync: FilesystemSync | null = null;
+let sweepCleanup: (() => void) | null = null;
 
 // Per-session L1 working memory stores
 const sessions: Map<string, WorkingMemory> = new Map();
@@ -145,7 +147,11 @@ export function registerPlugin(api: any): void {
       // Filesystem sync is optional — system works without it
     }
 
-    // 8. Register agent tools (PLUG-06 + PLUG-07)
+    // 8. Start decay sweep scheduler (FORGET-05)
+    sweepCleanup = startSweepScheduler(store, config, api.logger);
+    api.logger.info(`[muma-mem] Decay sweep: every ${config.decay.sweepIntervalMinutes}min`);
+
+    // 9. Register agent tools (PLUG-06 + PLUG-07)
     registerTools(api);
     api.logger.info("[muma-mem] Agent tools registered.");
 
@@ -338,6 +344,12 @@ export function registerPlugin(api: any): void {
       wm.clear();
     }
     sessions.clear();
+
+    // Stop decay sweep scheduler
+    if (sweepCleanup) {
+      sweepCleanup();
+      sweepCleanup = null;
+    }
 
     if (transactiveIndex) {
       transactiveIndex.clear();

@@ -5,7 +5,7 @@ import type {
   VectorSearchOptions,
   VectorSearchResult,
 } from "../types/store.js";
-import type { Note, NoteCreate, NoteUpdate } from "../types/note.js";
+import type { Note, NoteCreate, NoteUpdate, MemoryConflict } from "../types/note.js";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -377,6 +377,22 @@ export class SQLiteMemoryStore implements MemoryStore {
       .get(userId) as { count: number };
 
     return result.count;
+  }
+
+  // -- Conflict storage (stub — full implementation deferred to 05-02) ------
+
+  async saveConflicts(_conflicts: MemoryConflict[]): Promise<void> {
+    // TODO: Implement SQLite conflict storage (05-02)
+  }
+
+  async getConflicts(_options?: { resolved?: boolean; limit?: number }): Promise<MemoryConflict[]> {
+    // TODO: Implement SQLite conflict retrieval (05-02)
+    return [];
+  }
+
+  async resolveConflict(_conflictId: string, _resolution: string): Promise<boolean> {
+    // TODO: Implement SQLite conflict resolution (05-02)
+    return false;
   }
 
   // -- Search --------------------------------------------------------------

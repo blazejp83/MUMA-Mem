@@ -4,7 +4,7 @@ import type {
   VectorSearchOptions,
   VectorSearchResult,
 } from "../types/store.js";
-import type { Note, NoteCreate, NoteUpdate } from "../types/note.js";
+import type { Note, NoteCreate, NoteUpdate, MemoryConflict } from "../types/note.js";
 
 // ---------------------------------------------------------------------------
 // Serialization helpers
@@ -411,6 +411,88 @@ export class RedisMemoryStore implements MemoryStore {
     }
 
     return searchResults;
+  }
+
+  // -- Conflict storage -----------------------------------------------------
+
+  async saveConflicts(conflicts: MemoryConflict[]): Promise<void> {
+    for (const conflict of conflicts) {
+      const key = `${this._prefix}conflicts:${conflict.id}`;
+      await this._client.hSet(key, {
+        id: conflict.id,
+        noteIdA: conflict.noteIdA,
+        noteIdB: conflict.noteIdB,
+        type: conflict.type,
+        description: conflict.description,
+        resolved: conflict.resolved ? "1" : "0",
+        resolution: conflict.resolution ?? "",
+        detectedAt: conflict.detectedAt,
+      });
+    }
+  }
+
+  async getConflicts(options?: { resolved?: boolean; limit?: number }): Promise<MemoryConflict[]> {
+    const pattern = `${this._prefix}conflicts:*`;
+    const limit = options?.limit ?? 100;
+
+    const keys: string[] = [];
+    for await (const keyOrKeys of this._client.scanIterator({
+      MATCH: pattern,
+      COUNT: 100,
+    })) {
+      if (Array.isArray(keyOrKeys)) {
+        keys.push(...keyOrKeys);
+      } else {
+        keys.push(keyOrKeys as string);
+      }
+    }
+
+    keys.sort();
+
+    const conflicts: MemoryConflict[] = [];
+
+    for (const key of keys) {
+      if (conflicts.length >= limit) break;
+
+      const data = await this._client.hGetAll(key);
+      if (!data || Object.keys(data).length === 0) continue;
+
+      const resolved = data.resolved === "1";
+
+      // Apply resolved filter if specified
+      if (options?.resolved !== undefined && resolved !== options.resolved) {
+        continue;
+      }
+
+      conflicts.push({
+        id: data.id,
+        noteIdA: data.noteIdA,
+        noteIdB: data.noteIdB,
+        type: data.type as MemoryConflict["type"],
+        description: data.description,
+        resolved,
+        resolution: data.resolution || undefined,
+        detectedAt: data.detectedAt,
+      });
+    }
+
+    return conflicts;
+  }
+
+  async resolveConflict(conflictId: string, resolution: string): Promise<boolean> {
+    const key = `${this._prefix}conflicts:${conflictId}`;
+    const data = await this._client.hGetAll(key);
+
+    if (!data || Object.keys(data).length === 0) {
+      return false;
+    }
+
+    await this._client.hSet(key, {
+      resolved: "1",
+      resolution,
+    });
+
+    return true;
   }
 
   // -- Private helpers -----------------------------------------------------
