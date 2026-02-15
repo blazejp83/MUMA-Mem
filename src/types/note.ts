@@ -56,4 +56,8 @@ export interface NoteUpdate {
   importance?: number;
   confidence?: number;
   pinned?: boolean;
+  access_count?: number;
+  access_log?: string[];
+  activation?: number;
+  half_life?: number;
 }

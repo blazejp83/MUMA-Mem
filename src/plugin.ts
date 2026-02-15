@@ -6,6 +6,8 @@ import { validateEmbeddingDimensions } from "./embedding/validation.js";
 import { createLLMProvider } from "./llm/factory.js";
 import { registerTools } from "./tools/index.js";
 import { write } from "./pipeline/write.js";
+import { search } from "./pipeline/read.js";
+import { WorkingMemory } from "./memory/index.js";
 import type { MemoryStore } from "./types/store.js";
 import type { EmbeddingProvider } from "./embedding/types.js";
 import type { LLMProvider } from "./llm/provider.js";
@@ -14,6 +16,33 @@ import type { LLMProvider } from "./llm/provider.js";
 let store: MemoryStore | null = null;
 let embeddingProvider: EmbeddingProvider | null = null;
 let llmProvider: LLMProvider | null = null;
+let mumaConfig: MumaConfig | null = null;
+
+// Per-session L1 working memory stores
+const sessions: Map<string, WorkingMemory> = new Map();
+
+/**
+ * Get or create a WorkingMemory instance for a given session.
+ */
+function getOrCreateSession(sessionId: string, config: MumaConfig): WorkingMemory {
+  let wm = sessions.get(sessionId);
+  if (!wm) {
+    wm = new WorkingMemory({
+      decayParameter: config.activation.decayParameter,
+      contextWeight: config.activation.contextWeight,
+      noiseStddev: config.activation.noiseStddev,
+    });
+    sessions.set(sessionId, wm);
+  }
+  return wm;
+}
+
+/**
+ * Public accessor: get working memory for a session.
+ */
+export function getWorkingMemory(sessionId: string): WorkingMemory | null {
+  return sessions.get(sessionId) ?? null;
+}
 
 export function getStore(): MemoryStore {
   if (!store) throw new Error("[muma-mem] Store not initialized. Is the gateway running?");
@@ -30,10 +59,18 @@ export function getLLMProvider(): LLMProvider {
   return llmProvider;
 }
 
+export function getConfig(): MumaConfig {
+  if (!mumaConfig) throw new Error("[muma-mem] Config not initialized. Is the gateway running?");
+  return mumaConfig;
+}
+
 export function registerPlugin(api: any): void {
   // Parse and validate config
   const rawConfig = api.pluginConfig ?? {};
   const config: MumaConfig = MumaConfigSchema.parse(rawConfig);
+
+  // Store config as module-level singleton for access by other modules
+  mumaConfig = config;
 
   // gateway_start: initialize storage + embedding
   api.on("gateway_start", async () => {
@@ -67,6 +104,108 @@ export function registerPlugin(api: any): void {
     api.logger.info("[muma-mem] Ready.");
   });
 
+  // PLUG-02: before_agent_start — inject combined L1 + L2 context
+  api.on("before_agent_start", async (event: any) => {
+    try {
+      // Guard: skip if store or embedding not ready
+      if (!store || !embeddingProvider) return;
+
+      const sessionId: string | undefined = event.sessionId;
+      const userId: string | undefined = event.userId;
+      const agentId: string | undefined = event.agentId;
+
+      if (!userId || !agentId) return;
+
+      const memories: string[] = [];
+
+      // L1: Get working memory context (if session exists)
+      if (sessionId) {
+        const wm = sessions.get(sessionId);
+        if (wm) {
+          const l1Items = wm.getContextItems(userId, agentId, 5);
+          for (const item of l1Items) {
+            memories.push(`[session] ${item.content}`);
+          }
+        }
+      }
+
+      // L2: Search persistent memory for relevant context
+      const queryText = event.lastMessage || event.systemPrompt || "";
+      if (queryText && store) {
+        try {
+          const l2Results = await search({
+            query: queryText,
+            userId,
+            topK: 10,
+          });
+          for (const result of l2Results) {
+            memories.push(`[memory] ${result.note.content}`);
+          }
+        } catch {
+          // Silently skip L2 if search fails
+        }
+      }
+
+      if (memories.length === 0) return;
+
+      // Format and return context for injection
+      const formatted = "## Relevant Memories\n\n" + memories.map((m) => `- ${m}`).join("\n");
+
+      // Return context via event property or return value
+      if (typeof event.addContext === "function") {
+        event.addContext(formatted);
+      } else {
+        event.memoryContext = formatted;
+      }
+
+      return { context: formatted };
+    } catch (err) {
+      api.logger.warn(`[muma-mem] Context injection failed: ${err}`);
+    }
+  });
+
+  // PLUG-03: session_end — promote high-activation L1 items to L2, discard rest
+  api.on("session_end", async (event: any) => {
+    const sessionId: string | undefined = event.sessionId;
+    if (!sessionId) return;
+
+    const wm = sessions.get(sessionId);
+    if (!wm) return;
+
+    try {
+      const threshold = config.activation.retrievalThreshold;
+      const promoted = wm.getTopActivated(threshold);
+      let promotedCount = 0;
+      const totalCount = wm.size;
+
+      // Only promote if LLM provider is configured (write() requires LLM)
+      if (llmProvider) {
+        for (const item of promoted) {
+          try {
+            await write(item.content, {
+              userId: item.userId,
+              agentId: item.agentId,
+              source: item.source,
+            });
+            promotedCount++;
+          } catch {
+            // Skip individual promotion failures
+          }
+        }
+      }
+
+      api.logger.info(
+        `[muma-mem] Session ${sessionId}: promoted ${promotedCount}/${totalCount} items to L2, discarded ${totalCount - promotedCount}`,
+      );
+    } catch (err) {
+      api.logger.warn(`[muma-mem] Session end promotion failed: ${err}`);
+    } finally {
+      // Always clean up
+      wm.clear();
+      sessions.delete(sessionId);
+    }
+  });
+
   // PLUG-04: Episodic capture hooks
   // message_received — capture user messages as "told" memories
   api.on("message_received", async (event: any) => {
@@ -74,7 +213,23 @@ export function registerPlugin(api: any): void {
     if (event.role !== "user") return;
     // Skip short messages (less than 20 chars — greetings, acks)
     if (!event.content || event.content.length < 20) return;
-    // Skip if LLM provider not configured (read-only mode)
+
+    // L1: Populate working memory (even without LLM)
+    if (event.sessionId && embeddingProvider) {
+      try {
+        const wm = getOrCreateSession(event.sessionId, config);
+        const embedding = await embeddingProvider.embed(event.content);
+        wm.add(event.content, embedding, {
+          agentId: event.agentId ?? "unknown",
+          userId: event.userId,
+          source: "told",
+        });
+      } catch (err) {
+        api.logger.warn(`[muma-mem] L1 capture failed: ${err}`);
+      }
+    }
+
+    // L2: Write to persistent store (requires LLM)
     if (!llmProvider) return;
 
     try {
@@ -93,11 +248,28 @@ export function registerPlugin(api: any): void {
   api.on("after_tool_call", async (event: any) => {
     // Only capture tool results that contain meaningful data
     if (!event.result || typeof event.result !== "string" || event.result.length < 50) return;
-    // Skip if LLM provider not configured (read-only mode)
+
+    const content = `Tool ${event.toolName} returned: ${event.result.substring(0, 500)}`;
+
+    // L1: Populate working memory (even without LLM)
+    if (event.sessionId && embeddingProvider) {
+      try {
+        const wm = getOrCreateSession(event.sessionId, config);
+        const embedding = await embeddingProvider.embed(content);
+        wm.add(content, embedding, {
+          agentId: event.agentId ?? "unknown",
+          userId: event.userId,
+          source: "experience",
+        });
+      } catch (err) {
+        api.logger.warn(`[muma-mem] L1 tool capture failed: ${err}`);
+      }
+    }
+
+    // L2: Write to persistent store (requires LLM)
     if (!llmProvider) return;
 
     try {
-      const content = `Tool ${event.toolName} returned: ${event.result.substring(0, 500)}`;
       await write(content, {
         userId: event.userId,
         agentId: event.agentId ?? "unknown",
@@ -111,6 +283,13 @@ export function registerPlugin(api: any): void {
   // gateway_stop: cleanup
   api.on("gateway_stop", async () => {
     api.logger.info("[muma-mem] Shutting down...");
+
+    // Clear all working memory sessions
+    for (const wm of sessions.values()) {
+      wm.clear();
+    }
+    sessions.clear();
+
     if (store) {
       await store.close();
       store = null;
@@ -120,6 +299,7 @@ export function registerPlugin(api: any): void {
       embeddingProvider = null;
     }
     llmProvider = null;
+    mumaConfig = null;
     api.logger.info("[muma-mem] Shutdown complete.");
   });
 }

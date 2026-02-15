@@ -234,11 +234,12 @@ export class SQLiteMemoryStore implements MemoryStore {
       // Bump metadata
       version: existing.version + 1,
       updated_at: new Date().toISOString(),
+      // Activation metadata: use updates if provided, otherwise preserve existing
+      access_count: updates.access_count ?? existing.access_count,
+      access_log: updates.access_log ?? existing.access_log,
+      activation: updates.activation ?? existing.activation,
+      half_life: updates.half_life ?? existing.half_life,
       // Preserve fields not in NoteUpdate
-      access_count: existing.access_count,
-      access_log: existing.access_log,
-      activation: existing.activation,
-      half_life: existing.half_life,
       source: existing.source,
     };
 
@@ -256,6 +257,10 @@ export class SQLiteMemoryStore implements MemoryStore {
         updated_at = @updated_at,
         domain = @domain,
         visibility = @visibility,
+        access_count = @access_count,
+        access_log = @access_log,
+        activation = @activation,
+        half_life = @half_life,
         importance = @importance,
         confidence = @confidence,
         pinned = @pinned,
@@ -272,6 +277,10 @@ export class SQLiteMemoryStore implements MemoryStore {
       updated_at: merged.updated_at,
       domain: merged.domain,
       visibility: merged.visibility,
+      access_count: merged.access_count,
+      access_log: JSON.stringify(merged.access_log),
+      activation: merged.activation,
+      half_life: merged.half_life,
       importance: merged.importance,
       confidence: merged.confidence,
       pinned: merged.pinned ? 1 : 0,

@@ -226,11 +226,12 @@ export class RedisMemoryStore implements MemoryStore {
       // Bump metadata
       version: existing.version + 1,
       updated_at: new Date().toISOString(),
+      // Activation metadata: use updates if provided, otherwise preserve existing
+      access_count: updates.access_count ?? existing.access_count,
+      access_log: updates.access_log ?? existing.access_log,
+      activation: updates.activation ?? existing.activation,
+      half_life: updates.half_life ?? existing.half_life,
       // Preserve fields not in NoteUpdate
-      access_count: existing.access_count,
-      access_log: existing.access_log,
-      activation: existing.activation,
-      half_life: existing.half_life,
       source: existing.source,
     };
 

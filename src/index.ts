@@ -8,7 +8,7 @@ export type { EmbeddingProvider } from "./embedding/types.js";
 export type { LLMProvider, GenerateOptions } from "./llm/index.js";
 export type { MumaConfig } from "./config.js";
 export { MumaConfigSchema } from "./config.js";
-export { getStore, getEmbeddingProvider, getLLMProvider } from "./plugin.js";
+export { getStore, getEmbeddingProvider, getLLMProvider, getConfig } from "./plugin.js";
 export { search, extract, construct, retrieve, decide, link, evolve, write } from "./pipeline/index.js";
 export type { SearchOptions, SearchResult, ExtractedFacts, ConstructOptions, WriteDecision, LinkResult, EvolveResult, WriteOptions, WriteResult } from "./pipeline/index.js";
 export { registerTools } from "./tools/index.js";
