@@ -19,9 +19,9 @@ Progress: █████████░ 76%
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
-- Average duration: 4 min
-- Total execution time: 62 min
+- Total plans completed: 13
+- Average duration: 5 min
+- Total execution time: 66 min
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: █████████░ 76%
 |-------|-------|-------|----------|
 | 1. Foundation | 5/5 | 19 min | 4 min |
 | 2. Core Memory | 5/5 | 38 min | 8 min |
-| 3. Intelligence | 2/3 | 5 min | 3 min |
+| 3. Intelligence | 3/3 | 9 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (2 min), 02-04 (2 min), 02-05 (2 min), 03-01 (2 min), 03-03 (3 min)
-- Trend: 03-03 fast — in-process class + plugin hook wiring, no complex integration
+- Last 5 plans: 02-04 (2 min), 02-05 (2 min), 03-01 (2 min), 03-03 (3 min), 03-02 (4 min)
+- Trend: 03-02 slightly longer — integration across store/pipeline/activation modules
 
 ## Accumulated Context
 
@@ -71,6 +71,9 @@ Recent decisions affecting current work:
 | 03-03 | L1 standalone in-process Map, no MemoryStore interface | L1 is ephemeral/session-scoped; store interface coupling adds complexity with no benefit |
 | 03-03 | Base-level activation only for promotion decisions | Promotion should reflect general importance, not relevance to a specific query |
 | 03-03 | L1 capture runs even without LLM provider | Working memory always active; LLM only needed for L2 write pipeline |
+| 03-02 | score = activation, similarity = raw vector | Backward compat: consumers sorting by score get activation ranking |
+| 03-02 | 2x overfetch for activation re-ranking | Enough candidates for reorder without excessive DB load |
+| 03-02 | getConfig() singleton set during registerPlugin | Config available immediately; no event lifecycle dependency |
 
 ### Pending Todos
 
@@ -83,5 +86,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 03-03-PLAN.md (Phase 3 in progress, 2/3 done — 03-02 running in parallel)
+Stopped at: Completed 03-02-PLAN.md (Phase 3 complete, all 3/3 done)
 Resume file: None
