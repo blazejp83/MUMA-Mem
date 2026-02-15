@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Agents automatically receive the right memories at the right time without explicit tool calls — scoped by visibility and domain, decayed by relevance, and consolidated from episodes into durable knowledge.
-**Current focus:** Phase 3 — Intelligence (In progress)
+**Current focus:** Phase 3 — Intelligence (Complete)
 
 ## Current Position
 
 Phase: 3 of 5 (Intelligence)
-Plan: 1 of 3 in current phase
-Status: In progress
-Last activity: 2026-02-15 — Completed 03-01-PLAN.md
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-02-15 — Completed 03-02-PLAN.md (final plan in Phase 3)
 
-Progress: ██████░░░░ 65%
+Progress: █████████░ 76%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: 4 min
-- Total execution time: 59 min
+- Total execution time: 62 min
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: ██████░░░░ 65%
 |-------|-------|-------|----------|
 | 1. Foundation | 5/5 | 19 min | 4 min |
 | 2. Core Memory | 5/5 | 38 min | 8 min |
-| 3. Intelligence | 1/3 | 2 min | 2 min |
+| 3. Intelligence | 2/3 | 5 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (1 min), 02-03 (2 min), 02-04 (2 min), 02-05 (2 min), 03-01 (2 min)
-- Trend: 03-01 fast — pure TDD math functions, no external deps or integration
+- Last 5 plans: 02-03 (2 min), 02-04 (2 min), 02-05 (2 min), 03-01 (2 min), 03-03 (3 min)
+- Trend: 03-03 fast — in-process class + plugin hook wiring, no complex integration
 
 ## Accumulated Context
 
@@ -68,6 +68,9 @@ Recent decisions affecting current work:
 | 03-01 | Petrov hybrid threshold at 50 accesses | Standard ACT-R cutoff; exact sum for small logs, O(1) for large |
 | 03-01 | MIN_DELTA_HOURS = 1 second for base-level activation | Prevents division by zero for simultaneous timestamps |
 | 03-01 | Logistic noise rejection sampling for u in (0,1) | Avoids Math.log(0) or Math.log(Infinity) edge cases |
+| 03-03 | L1 standalone in-process Map, no MemoryStore interface | L1 is ephemeral/session-scoped; store interface coupling adds complexity with no benefit |
+| 03-03 | Base-level activation only for promotion decisions | Promotion should reflect general importance, not relevance to a specific query |
+| 03-03 | L1 capture runs even without LLM provider | Working memory always active; LLM only needed for L2 write pipeline |
 
 ### Pending Todos
 
@@ -80,5 +83,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 03-01-PLAN.md (Phase 3 in progress, 1/3 done)
+Stopped at: Completed 03-03-PLAN.md (Phase 3 in progress, 2/3 done — 03-02 running in parallel)
 Resume file: None

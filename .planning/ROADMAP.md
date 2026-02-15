@@ -64,7 +64,7 @@ Plans:
 Plans:
 - [x] 03-01: ACT-R Activation + Ebbinghaus Decay Math [TDD] (Wave 1)
 - [ ] 03-02: Search Pipeline Activation Integration (Wave 2, depends: 01)
-- [ ] 03-03: Working Memory L1 + Session Hooks (Wave 2, depends: 01)
+- [x] 03-03: Working Memory L1 + Session Hooks (Wave 2, depends: 01)
 
 ### Phase 4: Multi-Agent
 **Goal**: Two-axis access model (domain + visibility), four visibility levels, domain-level rules with longest-prefix matching, per-agent memory profiles, cross-agent pub/sub sync, bidirectional filesystem sync
