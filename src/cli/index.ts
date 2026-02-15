@@ -9,6 +9,8 @@ import { MumaConfigSchema, type MumaConfig } from "../config.js";
 import { createStore } from "../store/factory.js";
 import { statsCommand } from "./stats.js";
 import { exportCommand } from "./export.js";
+import { consolidateCommand } from "./consolidate.js";
+import { conflictsCommand } from "./conflicts.js";
 import type { MemoryStore } from "../types/store.js";
 
 // ---------------------------------------------------------------------------
@@ -58,11 +60,13 @@ async function loadConfig(configPath?: string): Promise<MumaConfig> {
     return MumaConfigSchema.parse(parsed);
   }
 
-  // Default config: SQLite at ~/.muma/memory.db
-  return MumaConfigSchema.parse({
-    redis: undefined,
+  // Default config: SQLite at ~/.muma/memory.db (no Redis)
+  const defaults = MumaConfigSchema.parse({
     sqlite: { path: join(homedir(), ".muma", "memory.db") },
   });
+  // Clear Redis URL so createStore skips Redis connection
+  defaults.redis.url = "";
+  return defaults;
 }
 
 // ---------------------------------------------------------------------------
@@ -122,17 +126,11 @@ async function main(): Promise<void> {
         break;
 
       case "consolidate":
-        console.error(
-          "Consolidate command not yet wired. See Task 2.",
-        );
-        process.exit(1);
+        await consolidateCommand(store, config, userId);
         break;
 
       case "conflicts":
-        console.error(
-          "Conflicts command not yet wired. See Task 2.",
-        );
-        process.exit(1);
+        await conflictsCommand(store, userId, values.all as boolean);
         break;
     }
   } finally {
