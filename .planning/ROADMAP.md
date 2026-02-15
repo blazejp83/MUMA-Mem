@@ -71,11 +71,13 @@ Plans:
 **Depends on**: Phase 3
 **Requirements**: VIS-01, VIS-02, VIS-03, VIS-04, VIS-05, AGENT-01, AGENT-02, AGENT-03, AGENT-04, AGENT-05, SYNC-01, SYNC-02, SYNC-03, PLUG-07
 **Research**: Unlikely (standard Redis pub/sub patterns, established access control)
-**Plans**: TBD
+**Plans**: 4 plans in 2 waves
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [ ] 04-01: Access Control Logic [TDD] (Wave 1)
+- [ ] 04-02: Cross-Agent Event Bus (Wave 1, parallel with 01)
+- [ ] 04-03: Visibility Integration + Transactive Memory + Tools (Wave 2, depends: 01, 02)
+- [ ] 04-04: Filesystem Sync (Wave 2, depends: 02)
 
 ### Phase 5: Background Intelligence
 **Goal**: Hourly decay sweep (BullMQ scheduled), daily consolidation (cluster→summarize→prune→conflict detect→distill MEMORY.md), CLI subcommands (stats, export, consolidate, conflicts), conflict detection + user resolution
