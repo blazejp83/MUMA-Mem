@@ -290,6 +290,41 @@ export class RedisMemoryStore implements MemoryStore {
     return notes;
   }
 
+  async listAllNotes(
+    options?: { limit?: number; offset?: number },
+  ): Promise<Note[]> {
+    const pattern = `${this._prefix}*:note:*`;
+    const limit = options?.limit ?? 100;
+    const offset = options?.offset ?? 0;
+
+    const keys: string[] = [];
+    for await (const keyOrKeys of this._client.scanIterator({
+      MATCH: pattern,
+      COUNT: 100,
+    })) {
+      if (Array.isArray(keyOrKeys)) {
+        keys.push(...keyOrKeys);
+      } else {
+        keys.push(keyOrKeys as string);
+      }
+    }
+
+    // Sort for deterministic ordering
+    keys.sort();
+
+    const paged = keys.slice(offset, offset + limit);
+    const notes: Note[] = [];
+
+    for (const key of paged) {
+      const data = await this._client.hGetAll(key);
+      if (data && Object.keys(data).length > 0) {
+        notes.push(deserializeNote(data));
+      }
+    }
+
+    return notes;
+  }
+
   async countByUser(userId: string): Promise<number> {
     const pattern = `${this._prefix}${userId}:note:*`;
     let count = 0;

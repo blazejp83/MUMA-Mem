@@ -28,6 +28,7 @@ export interface MemoryStore {
 
   // Bulk operations
   listByUser(userId: string, options?: { limit?: number; offset?: number }): Promise<Note[]>;
+  listAllNotes(options?: { limit?: number; offset?: number }): Promise<Note[]>;
   countByUser(userId: string): Promise<number>;
 
   // Metadata

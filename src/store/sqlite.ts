@@ -351,6 +351,25 @@ export class SQLiteMemoryStore implements MemoryStore {
     });
   }
 
+  async listAllNotes(
+    options?: { limit?: number; offset?: number },
+  ): Promise<Note[]> {
+    const db = this._getDb();
+    const limit = options?.limit ?? 100;
+    const offset = options?.offset ?? 0;
+
+    const rows = db
+      .prepare(
+        `SELECT rowid, * FROM notes ORDER BY created_at LIMIT ? OFFSET ?`,
+      )
+      .all(limit, offset) as (SqliteNoteRow & { rowid: number })[];
+
+    return rows.map((row) => {
+      const embedding = this._getEmbedding(row.rowid);
+      return deserializeRow(row, embedding);
+    });
+  }
+
   async countByUser(userId: string): Promise<number> {
     const db = this._getDb();
     const result = db
