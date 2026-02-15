@@ -10,29 +10,29 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 ## Current Position
 
 Phase: 2 of 5 (Core Memory)
-Plan: 2 of 5 in current phase
+Plan: 3 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-15 — Completed 02-02-PLAN.md
+Last activity: 2026-02-15 — Completed 02-03-PLAN.md
 
-Progress: ████░░░░░░ 41%
+Progress: ████░░░░░░ 47%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
-- Average duration: 5 min
-- Total execution time: 51 min
+- Total plans completed: 8
+- Average duration: 4 min
+- Total execution time: 53 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 5/5 | 19 min | 4 min |
-| 2. Core Memory | 2/5 | 32 min | 16 min |
+| 2. Core Memory | 3/5 | 34 min | 11 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (4 min), 01-04 (6 min), 01-05 (3 min), 02-01 (31 min), 02-02 (1 min)
-- Trend: 02-02 fast — pure type-safe implementation, no new dependencies
+- Last 5 plans: 01-04 (6 min), 01-05 (3 min), 02-01 (31 min), 02-02 (1 min), 02-03 (2 min)
+- Trend: 02-03 fast — pure function implementations with LLM prompts, no new deps
 
 ## Accumulated Context
 
@@ -57,6 +57,8 @@ Recent decisions affecting current work:
 | 02-01 | No streaming or retry in LLM provider | Pipeline steps are single-shot; callers can retry |
 | 02-02 | Fire-and-forget access tracking in search | Keeps search under 200ms target (SEARCH-02) |
 | 02-02 | 1-hop link expansion default true | Agents get expanded context without opt-in |
+| 02-03 | Low temperature for LLM extraction/decision (0.3/0.2) | Deterministic, reproducible structured data output |
+| 02-03 | Default to ADD on invalid LLM decision | Safe fallback — adding a duplicate beats losing data |
 
 ### Pending Todos
 
@@ -69,5 +71,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 02-02-PLAN.md
+Stopped at: Completed 02-03-PLAN.md
 Resume file: None
