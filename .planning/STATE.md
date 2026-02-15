@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Agents automatically receive the right memories at the right time without explicit tool calls — scoped by visibility and domain, decayed by relevance, and consolidated from episodes into durable knowledge.
-**Current focus:** Phase 5 — Background Intelligence (In progress)
+**Current focus:** Phase 5 — Background Intelligence (Complete)
 
 ## Current Position
 
 Phase: 5 of 5 (Background Intelligence)
-Plan: 3 of 4 in current phase
-Status: In progress
-Last activity: 2026-02-15 — Completed 05-03-PLAN.md
+Plan: 4 of 4 in current phase
+Status: Phase complete
+Last activity: 2026-02-15 — Completed 05-04-PLAN.md
 
-Progress: █████████░ 95%
+Progress: ██████████ 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
+- Total plans completed: 21
 - Average duration: 4 min
-- Total execution time: 77 min
+- Total execution time: 86 min
 
 **By Phase:**
 
@@ -32,9 +32,11 @@ Progress: █████████░ 95%
 | 3. Intelligence | 3/3 | 9 min | 3 min |
 | 4. Multi-Agent | 4/4 | 7 min | 2 min |
 
+| 5. Background Intelligence | 4/4 | 16 min | 4 min |
+
 **Recent Trend:**
-- Last 5 plans: 03-02 (4 min), 04-01 (1 min), 04-04 (3 min), 04-02 (0 min), 04-03 (4 min)
-- Trend: Phase 4 executed in parallel — all 4 plans completed in single session
+- Last 5 plans: 04-03 (4 min), 05-01 (3 min), 05-02 (4 min), 05-03 (4 min), 05-04 (5 min)
+- Trend: Phase 5 executed in parallel waves — all 4 plans completed
 
 ## Accumulated Context
 
@@ -95,6 +97,9 @@ Recent decisions affecting current work:
 | 05-03 | Daily scheduler first run after 24h (not immediate) | Sweep handles immediate needs; avoid redundant work on startup |
 | 05-03 | Per-user error isolation in consolidation scheduler | One user's failure doesn't stop others |
 | 05-03 | memory.consolidate guards on LLM provider | Consolidation requires LLM; clear error if unconfigured |
+| 05-04 | Node.js built-in parseArgs for CLI | Zero external CLI dependencies |
+| 05-04 | Default CLI config clears Redis URL | Standalone CLI uses SQLite only without .muma.json |
+| 05-04 | Embedding placeholder in JSON export | Float32Array not useful in JSON; use {dimensions, omitted} |
 
 ### Pending Todos
 
@@ -107,5 +112,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 05-03-PLAN.md (3/4 Phase 5 plans done)
+Stopped at: Completed 05-04-PLAN.md (4/4 Phase 5 plans done — all phases complete)
 Resume file: None

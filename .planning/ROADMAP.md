@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Core Memory** - Write pipeline, read pipeline, semantic search, note linking, agent tools
 - [x] **Phase 3: Intelligence** - ACT-R activation scoring, Ebbinghaus forgetting, L1 working memory, session hooks
 - [x] **Phase 4: Multi-Agent** - Two-axis access model, visibility levels, cross-agent coordination, filesystem sync
-- [ ] **Phase 5: Background Intelligence** - Daemon (decay sweeps, consolidation), conflict detection, CLI tools
+- [x] **Phase 5: Background Intelligence** - Daemon (decay sweeps, consolidation), conflict detection, CLI tools
 
 ## Phase Details
 
@@ -91,7 +91,7 @@ Plans:
 - [x] 05-01: Decay Sweep Daemon (Wave 1)
 - [x] 05-02: Consolidation Engine (Wave 1, parallel with 01)
 - [x] 05-03: MEMORY.md Distillation + Daily Scheduler (Wave 2, depends: 01, 02)
-- [ ] 05-04: CLI Commands (Wave 2, depends: 01, 02)
+- [x] 05-04: CLI Commands (Wave 2, depends: 01, 02)
 
 ## Progress
 
@@ -104,4 +104,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Core Memory | 5/5 | Complete | 2026-02-15 |
 | 3. Intelligence | 3/3 | Complete | 2026-02-15 |
 | 4. Multi-Agent | 4/4 | Complete | 2026-02-15 |
-| 5. Background Intelligence | 3/4 | In progress | - |
+| 5. Background Intelligence | 4/4 | Complete | 2026-02-15 |
