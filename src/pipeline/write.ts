@@ -1,5 +1,5 @@
 import type { Note, MemorySource, WriteOperation } from "../types/note.js";
-import { getStore, getEmbeddingProvider, getLLMProvider } from "../plugin.js";
+import { getStore, getEmbeddingProvider, getLLMProvider, getEventBus } from "../plugin.js";
 import { extract } from "./extract.js";
 import { construct } from "./construct.js";
 import { retrieve } from "./retrieve.js";
@@ -55,9 +55,22 @@ export async function write(
   // 5. Execute based on decision
   let note: Note | null = null;
 
+  const bus = getEventBus();
+
   switch (decision.operation) {
     case "ADD": {
       note = await store.create(noteCreate);
+      // Fire-and-forget event emission (non-blocking)
+      if (bus && note) {
+        void bus.emit({
+          type: "memory:write",
+          noteId: note.id,
+          userId: options.userId,
+          agentId: options.agentId,
+          domain: note.domain,
+          timestamp: new Date().toISOString(),
+        }).catch(() => {});
+      }
       break;
     }
     case "UPDATE": {
@@ -69,10 +82,32 @@ export async function write(
         embedding: noteCreate.embedding,
       });
       note = await store.read(decision.targetNoteId!, options.userId);
+      // Fire-and-forget event emission (non-blocking)
+      if (bus) {
+        void bus.emit({
+          type: "memory:update",
+          noteId: decision.targetNoteId!,
+          userId: options.userId,
+          agentId: options.agentId,
+          domain: note?.domain ?? "",
+          timestamp: new Date().toISOString(),
+        }).catch(() => {});
+      }
       break;
     }
     case "DELETE": {
       await store.delete(decision.targetNoteId!, options.userId);
+      // Fire-and-forget event emission (non-blocking)
+      if (bus) {
+        void bus.emit({
+          type: "memory:delete",
+          noteId: decision.targetNoteId!,
+          userId: options.userId,
+          agentId: options.agentId,
+          domain: "",
+          timestamp: new Date().toISOString(),
+        }).catch(() => {});
+      }
       return {
         operation: "DELETE",
         note: null,

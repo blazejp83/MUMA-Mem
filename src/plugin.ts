@@ -11,12 +11,15 @@ import { WorkingMemory } from "./memory/index.js";
 import type { MemoryStore } from "./types/store.js";
 import type { EmbeddingProvider } from "./embedding/types.js";
 import type { LLMProvider } from "./llm/provider.js";
+import type { EventBus } from "./sync/index.js";
+import { createEventBus } from "./sync/index.js";
 
 // Module-level state (lives for gateway lifetime)
 let store: MemoryStore | null = null;
 let embeddingProvider: EmbeddingProvider | null = null;
 let llmProvider: LLMProvider | null = null;
 let mumaConfig: MumaConfig | null = null;
+let eventBus: EventBus | null = null;
 
 // Per-session L1 working memory stores
 const sessions: Map<string, WorkingMemory> = new Map();
@@ -64,6 +67,10 @@ export function getConfig(): MumaConfig {
   return mumaConfig;
 }
 
+export function getEventBus(): EventBus | null {
+  return eventBus;
+}
+
 export function registerPlugin(api: any): void {
   // Parse and validate config
   const rawConfig = api.pluginConfig ?? {};
@@ -97,7 +104,16 @@ export function registerPlugin(api: any): void {
       api.logger.info(`[muma-mem] LLM: ${llmProvider.modelName}`);
     }
 
-    // 5. Register agent tools (PLUG-06)
+    // 5. Create event bus for cross-agent notifications (AGENT-03)
+    try {
+      eventBus = await createEventBus(store.backend, config);
+      api.logger.info(`[muma-mem] Event bus: ${store.backend}`);
+    } catch (err) {
+      api.logger.warn(`[muma-mem] Event bus init failed (non-fatal): ${err}`);
+      // Event bus is optional — system works without it
+    }
+
+    // 6. Register agent tools (PLUG-06)
     registerTools(api);
     api.logger.info("[muma-mem] Agent tools registered.");
 
@@ -290,6 +306,10 @@ export function registerPlugin(api: any): void {
     }
     sessions.clear();
 
+    if (eventBus) {
+      await eventBus.close();
+      eventBus = null;
+    }
     if (store) {
       await store.close();
       store = null;
