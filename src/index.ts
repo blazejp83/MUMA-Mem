@@ -5,9 +5,10 @@ import { registerPlugin } from "./plugin.js";
 export type { Note, NoteCreate, NoteUpdate, Visibility, MemorySource } from "./types/note.js";
 export type { MemoryStore, VectorSearchOptions, VectorSearchResult } from "./types/store.js";
 export type { EmbeddingProvider } from "./embedding/types.js";
+export type { LLMProvider, GenerateOptions } from "./llm/index.js";
 export type { MumaConfig } from "./config.js";
 export { MumaConfigSchema } from "./config.js";
-export { getStore, getEmbeddingProvider } from "./plugin.js";
+export { getStore, getEmbeddingProvider, getLLMProvider } from "./plugin.js";
 
 const memoryMumaPlugin = {
   id: "memory-muma",
