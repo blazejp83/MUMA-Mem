@@ -74,10 +74,10 @@ Plans:
 **Plans**: 4 plans in 2 waves
 
 Plans:
-- [ ] 04-01: Access Control Logic [TDD] (Wave 1)
-- [ ] 04-02: Cross-Agent Event Bus (Wave 1, parallel with 01)
+- [x] 04-01: Access Control Logic [TDD] (Wave 1)
+- [x] 04-02: Cross-Agent Event Bus (Wave 1, parallel with 01)
 - [ ] 04-03: Visibility Integration + Transactive Memory + Tools (Wave 2, depends: 01, 02)
-- [ ] 04-04: Filesystem Sync (Wave 2, depends: 02)
+- [x] 04-04: Filesystem Sync (Wave 2, depends: 02)
 
 ### Phase 5: Background Intelligence
 **Goal**: Hourly decay sweep (BullMQ scheduled), daily consolidation (cluster→summarize→prune→conflict detect→distill MEMORY.md), CLI subcommands (stats, export, consolidate, conflicts), conflict detection + user resolution
@@ -101,5 +101,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation | 5/5 | Complete | 2026-02-14 |
 | 2. Core Memory | 5/5 | Complete | 2026-02-15 |
 | 3. Intelligence | 3/3 | Complete | 2026-02-15 |
-| 4. Multi-Agent | 0/TBD | Not started | - |
+| 4. Multi-Agent | 3/4 | In progress | - |
 | 5. Background Intelligence | 0/TBD | Not started | - |
