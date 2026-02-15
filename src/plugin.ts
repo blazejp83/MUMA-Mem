@@ -152,6 +152,7 @@ export function registerPlugin(api: any): void {
           const l2Results = await search({
             query: queryText,
             userId,
+            agentId,  // VIS-04: enables visibility filtering
             topK: 10,
           });
           for (const result of l2Results) {

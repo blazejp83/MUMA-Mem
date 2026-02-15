@@ -7,10 +7,12 @@ import {
   totalActivation,
 } from "../activation/scoring.js";
 import { trackAccess } from "../activation/tracking.js";
+import { resolveAgentProfile, canAgentSeeNote } from "../access/index.js";
 
 export interface SearchOptions {
   query: string;              // Natural language query
   userId: string;
+  agentId?: string;           // Optional — enables visibility filtering (VIS-04)
   topK?: number;              // Default 10
   minScore?: number;          // Minimum similarity threshold (raw vector)
   expandLinks?: boolean;      // Default true — include 1-hop linked notes
@@ -43,6 +45,7 @@ export async function search(options: SearchOptions): Promise<SearchResult[]> {
   const {
     query,
     userId,
+    agentId,
     topK = 10,
     minScore,
     expandLinks = true,
@@ -64,6 +67,15 @@ export async function search(options: SearchOptions): Promise<SearchResult[]> {
     minScore,
   });
 
+  // Visibility gate (VIS-04): filter unauthorized notes before scoring
+  let candidates = vectorResults;
+  if (agentId) {
+    const profile = resolveAgentProfile(agentId, config);
+    candidates = vectorResults.filter((vr) =>
+      canAgentSeeNote(vr.note, agentId, profile),
+    );
+  }
+
   // 3. Compute ACT-R activation for each candidate
   const now = new Date();
   const { decayParameter, contextWeight, noiseStddev, retrievalThreshold } =
@@ -75,7 +87,7 @@ export async function search(options: SearchOptions): Promise<SearchResult[]> {
     activationScore: number;
   }> = [];
 
-  for (const vr of vectorResults) {
+  for (const vr of candidates) {
     const base = baseLevelActivation(vr.note.access_log, now, decayParameter);
     const spreading = spreadingActivation(vr.score, contextWeight);
     const noise = stochasticNoise(noiseStddev);
