@@ -10,29 +10,29 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 ## Current Position
 
 Phase: 2 of 5 (Core Memory)
-Plan: 3 of 5 in current phase
+Plan: 4 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-15 — Completed 02-03-PLAN.md
+Last activity: 2026-02-15 — Completed 02-04-PLAN.md
 
-Progress: ████░░░░░░ 47%
+Progress: █████░░░░░ 53%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
+- Total plans completed: 9
 - Average duration: 4 min
-- Total execution time: 53 min
+- Total execution time: 55 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 5/5 | 19 min | 4 min |
-| 2. Core Memory | 3/5 | 34 min | 11 min |
+| 2. Core Memory | 4/5 | 36 min | 9 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-04 (6 min), 01-05 (3 min), 02-01 (31 min), 02-02 (1 min), 02-03 (2 min)
-- Trend: 02-03 fast — pure function implementations with LLM prompts, no new deps
+- Last 5 plans: 01-05 (3 min), 02-01 (31 min), 02-02 (1 min), 02-03 (2 min), 02-04 (2 min)
+- Trend: 02-04 fast — pure function implementations with existing patterns, no new deps
 
 ## Accumulated Context
 
@@ -59,6 +59,9 @@ Recent decisions affecting current work:
 | 02-02 | 1-hop link expansion default true | Agents get expanded context without opt-in |
 | 02-03 | Low temperature for LLM extraction/decision (0.3/0.2) | Deterministic, reproducible structured data output |
 | 02-03 | Default to ADD on invalid LLM decision | Safe fallback — adding a duplicate beats losing data |
+| 02-04 | Vector similarity only for linking (no LLM) | Fast/cheap at write time; Phase 3 activation scoring improves relevance |
+| 02-04 | Single batched LLM call in evolve | Reduces N calls to 1 for efficiency |
+| 02-04 | Graceful LLM failure in evolve (skip evolution) | Context stays as-is; no data loss on LLM error |
 
 ### Pending Todos
 
@@ -71,5 +74,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 02-03-PLAN.md
+Stopped at: Completed 02-04-PLAN.md
 Resume file: None
