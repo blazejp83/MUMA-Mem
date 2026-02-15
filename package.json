@@ -11,6 +11,9 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "bin": {
+    "muma": "dist/cli/index.js"
+  },
   "engines": {
     "node": ">=22.0.0"
   },
