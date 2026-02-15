@@ -59,12 +59,12 @@ Plans:
 **Requirements**: SEARCH-03, ACT-01, ACT-02, ACT-03, ACT-04, ACT-05, FORGET-01, FORGET-02, FORGET-03, FORGET-04, WM-01, WM-02, WM-03, PLUG-02, PLUG-03
 **Research**: Likely (cognitive science algorithms, no existing implementations)
 **Research topics**: ACT-R parameter calibration (d=0.5, w=11.0, σ=1.2 starting points), Petrov 2006 hybrid approximation, Ebbinghaus adaptive half-life tuning
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
+- [ ] 03-01: ACT-R Activation + Ebbinghaus Decay Math [TDD] (Wave 1)
+- [ ] 03-02: Search Pipeline Activation Integration (Wave 2, depends: 01)
+- [ ] 03-03: Working Memory L1 + Session Hooks (Wave 2, depends: 01)
 
 ### Phase 4: Multi-Agent
 **Goal**: Two-axis access model (domain + visibility), four visibility levels, domain-level rules with longest-prefix matching, per-agent memory profiles, cross-agent pub/sub sync, bidirectional filesystem sync
