@@ -85,11 +85,13 @@ Plans:
 **Requirements**: FORGET-05, CONSOL-01, CONSOL-02, CONSOL-03, CONSOL-04, CONSOL-05, CONSOL-06, CLI-01, CLI-02, CLI-03, CLI-04
 **Research**: Likely (no established quality benchmarks)
 **Research topics**: Consolidation quality metrics (information preservation measurement), BullMQ scheduling patterns, SQLite-only fallback scheduler
-**Plans**: TBD
+**Plans**: 4 plans in 2 waves
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
+- [ ] 05-01: Decay Sweep Daemon (Wave 1)
+- [ ] 05-02: Consolidation Engine (Wave 1, parallel with 01)
+- [ ] 05-03: MEMORY.md Distillation + Daily Scheduler (Wave 2, depends: 01, 02)
+- [ ] 05-04: CLI Commands (Wave 2, depends: 01, 02)
 
 ## Progress
 

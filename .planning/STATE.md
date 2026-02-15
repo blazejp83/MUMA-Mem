@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Agents automatically receive the right memories at the right time without explicit tool calls — scoped by visibility and domain, decayed by relevance, and consolidated from episodes into durable knowledge.
-**Current focus:** Phase 4 — Multi-Agent (Complete)
+**Current focus:** Phase 5 — Background Intelligence (Planning complete)
 
 ## Current Position
 
-Phase: 4 of 5 (Multi-Agent)
-Plan: 4 of 4 in current phase
-Status: Phase complete
-Last activity: 2026-02-15 — Completed 04-03-PLAN.md (Phase 4 complete, all 4/4 done)
+Phase: 5 of 5 (Background Intelligence)
+Plan: 0 of 4 in current phase
+Status: Phase planned, ready for execution
+Last activity: 2026-02-15 — Planned Phase 5 (4 plans in 2 waves)
 
 Progress: █████████░ 89%
 
