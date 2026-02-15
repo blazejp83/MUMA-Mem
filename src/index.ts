@@ -18,6 +18,9 @@ export type { MemoryEventType, MemoryEvent, MemoryEventHandler, EventBus } from 
 export { createEventBus } from "./sync/index.js";
 export { TransactiveMemoryIndex, createTransactiveIndex } from "./access/index.js";
 export type { AgentProfile } from "./access/index.js";
+export { consolidate, distillMemoryMd, writeMemoryMdFile } from "./consolidation/index.js";
+export type { ConsolidationReport } from "./consolidation/index.js";
+export type { ConflictType, MemoryConflict } from "./types/note.js";
 
 const memoryMumaPlugin = {
   id: "memory-muma",

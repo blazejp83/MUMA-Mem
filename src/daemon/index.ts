@@ -1,12 +1,15 @@
 /**
  * Daemon module: background tasks for the memory system.
  *
- * Currently provides the decay sweep scheduler that recalculates
- * activation scores on a configurable interval.
+ * Provides:
+ * - Decay sweep scheduler (recalculates activation scores on interval)
+ * - Consolidation scheduler (daily consolidation + MEMORY.md distillation)
  */
 
 export { runDecaySweep } from "./sweep.js";
 export type { SweepStats } from "./sweep.js";
+
+export { startConsolidationScheduler } from "./scheduler.js";
 
 import { runDecaySweep } from "./sweep.js";
 import type { MemoryStore } from "../types/store.js";

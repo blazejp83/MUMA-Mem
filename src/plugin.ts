@@ -14,7 +14,7 @@ import type { LLMProvider } from "./llm/provider.js";
 import type { EventBus } from "./sync/index.js";
 import { createEventBus, FilesystemSync } from "./sync/index.js";
 import { TransactiveMemoryIndex, createTransactiveIndex } from "./access/index.js";
-import { startSweepScheduler } from "./daemon/index.js";
+import { startSweepScheduler, startConsolidationScheduler } from "./daemon/index.js";
 import * as os from "node:os";
 import * as path from "node:path";
 
@@ -27,6 +27,7 @@ let eventBus: EventBus | null = null;
 let transactiveIndex: TransactiveMemoryIndex | null = null;
 let filesystemSync: FilesystemSync | null = null;
 let sweepCleanup: (() => void) | null = null;
+let consolidationCleanup: (() => void) | null = null;
 
 // Per-session L1 working memory stores
 const sessions: Map<string, WorkingMemory> = new Map();
@@ -151,7 +152,15 @@ export function registerPlugin(api: any): void {
     sweepCleanup = startSweepScheduler(store, config, api.logger);
     api.logger.info(`[muma-mem] Decay sweep: every ${config.decay.sweepIntervalMinutes}min`);
 
-    // 9. Register agent tools (PLUG-06 + PLUG-07)
+    // 9. Start daily consolidation scheduler (CONSOL-04) — only if LLM configured
+    if (llmProvider && embeddingProvider) {
+      consolidationCleanup = startConsolidationScheduler(
+        store, embeddingProvider, llmProvider, config, api.logger,
+      );
+      api.logger.info("[muma-mem] Consolidation: daily");
+    }
+
+    // 10. Register agent tools (PLUG-06 + PLUG-07)
     registerTools(api);
     api.logger.info("[muma-mem] Agent tools registered.");
 
@@ -349,6 +358,12 @@ export function registerPlugin(api: any): void {
     if (sweepCleanup) {
       sweepCleanup();
       sweepCleanup = null;
+    }
+
+    // Stop consolidation scheduler
+    if (consolidationCleanup) {
+      consolidationCleanup();
+      consolidationCleanup = null;
     }
 
     if (transactiveIndex) {

@@ -1,8 +1,10 @@
 import type { Visibility } from "../types/note.js";
 import { write } from "../pipeline/write.js";
 import { search } from "../pipeline/read.js";
-import { getStore, getWorkingMemory, getTransactiveIndex, getConfig } from "../plugin.js";
+import { getStore, getWorkingMemory, getTransactiveIndex, getConfig, getEmbeddingProvider, getLLMProvider } from "../plugin.js";
 import { resolveAgentProfile, canAgentSeeNote } from "../access/index.js";
+import { consolidate } from "../consolidation/consolidate.js";
+import { distillMemoryMd, writeMemoryMdFile } from "../consolidation/distill.js";
 
 const VALID_VISIBILITY = new Set<Visibility>(["open", "scoped", "private", "user-only"]);
 
@@ -346,18 +348,41 @@ export function registerTools(api: any): void {
     },
   });
 
-  // 10. memory.consolidate — Trigger manual consolidation (Phase 5 placeholder)
+  // 10. memory.consolidate — Trigger on-demand consolidation + MEMORY.md distillation
   api.registerTool({
     name: "memory.consolidate",
-    description: "Trigger manual memory consolidation. This feature is planned for a future version.",
+    description: "Trigger on-demand memory consolidation: clusters related memories, generates summaries, detects conflicts, and distills a MEMORY.md knowledge file.",
     parameters: {
       type: "object",
       properties: {},
     },
-    execute: async () => {
+    execute: async (_params: Record<string, never>, context: any) => {
+      // Guard: consolidation requires LLM provider
+      let llm;
+      let embedding;
+      try {
+        llm = getLLMProvider();
+        embedding = getEmbeddingProvider();
+      } catch {
+        return {
+          status: "error",
+          message: "Consolidation requires an LLM provider. Configure llm.apiKey and llm.model.",
+        };
+      }
+
+      const store = getStore();
+
+      // 1. Run consolidation pipeline
+      const report = await consolidate(context.userId, store, embedding, llm);
+
+      // 2. Distill and write MEMORY.md
+      const content = await distillMemoryMd(context.userId, store, llm);
+      const memoryMdPath = await writeMemoryMdFile(content, context.userId);
+
       return {
-        status: "not_available",
-        message: "Consolidation will be available in a future version.",
+        status: "success",
+        report,
+        memoryMdPath,
       };
     },
   });
