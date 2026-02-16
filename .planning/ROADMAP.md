@@ -74,15 +74,15 @@ Plans:
 Plans:
 - [x] 09-01: OpenClaw CLI registrar (CommanderLikeCommand type, registerMemoryCli, 4 subcommands) -- completed 2026-02-17
 
-#### Phase 10: Hook Extensions
+#### Phase 10: Hook Extensions -- Complete
 
 **Goal**: Add session_start, before_compaction, and before_reset hooks for eager initialization and better memory capture
 **Depends on**: Phase 7
 **Research**: Unlikely (spec defines available hooks and recommended additions)
-**Plans**: TBD
+**Plans**: 1
 
 Plans:
-- [ ] 10-01: TBD
+- [x] 10-01: Hook extensions (session_start, before_compaction, before_reset + L1 capture in after_tool_call) -- completed 2026-02-17
 
 #### Phase 11: Integration Tests
 
@@ -110,5 +110,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. Hook Alignment | v1.1 | 1/1 | Complete | 2026-02-16 |
 | 8. Tool Factory | v1.1 | 1/1 | Complete | 2026-02-16 |
 | 9. CLI Bridge | v1.1 | 1/1 | Complete | 2026-02-17 |
-| 10. Hook Extensions | v1.1 | 0/? | Not started | - |
+| 10. Hook Extensions | v1.1 | 1/1 | Complete | 2026-02-17 |
 | 11. Integration Tests | v1.1 | 0/? | Not started | - |

@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 
 ## Current Position
 
-Phase: 9 of 11 (CLI Bridge)
+Phase: 10 of 11 (Hook Extensions)
 Plan: 1 of 1 in current phase
 Status: Phase complete
-Last activity: 2026-02-17 - Completed 09-01-PLAN.md
+Last activity: 2026-02-17 - Completed 10-01-PLAN.md
 
-Progress: █████████░ 93%
+Progress: ██████████░ 96%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 25
+- Total plans completed: 26
 - Average duration: 4 min
-- Total execution time: 95 min
+- Total execution time: 97 min
 
 **By Phase:**
 
@@ -36,6 +36,7 @@ Progress: █████████░ 93%
 | 7. Hook Alignment | 1/1 | 3 min | 3 min |
 | 8. Tool Factory | 1/1 | 3 min | 3 min |
 | 9. CLI Bridge | 1/1 | 1 min | 1 min |
+| 10. Hook Extensions | 1/1 | 2 min | 2 min |
 
 ## Accumulated Context
 
@@ -54,6 +55,9 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes marked
 | 8 | Tool registration at register() time, not gateway_start | Factory pattern defers instantiation to per-session calls |
 | 9 | CommanderLikeCommand as local interface (no commander dep) | Commander instance provided by OpenClaw at runtime |
 | 9 | CLI registration at register() time | Same pattern as tool registration; commands run on user invocation |
+| 10 | sessionKeyToId reverse lookup for L1 capture | Avoids changing OpenClaw SDK context types; bridges sessionKey-only hooks to sessionId-keyed sessions |
+| 10 | before_compaction promotes without clearing L1 | Session continues after compaction; L1 data still needed |
+| 10 | before_reset promotes and clears L1 | Session restarts; full cleanup required |
 
 ### Pending Todos
 
@@ -70,5 +74,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 09-01-PLAN.md (Phase 9 complete)
+Stopped at: Completed 10-01-PLAN.md (Phase 10 complete)
 Resume file: None
