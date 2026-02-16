@@ -132,6 +132,25 @@ export type PluginHookGatewayContext = {
   port?: number;
 };
 
+// 3.7 session_start
+export type PluginHookSessionStartEvent = {
+  sessionId: string;
+  resumedFrom?: string;
+};
+
+// 3.8 before_compaction
+export type PluginHookBeforeCompactionEvent = {
+  messageCount: number;
+  sessionFile?: string;
+};
+
+// 3.9 before_reset
+export type PluginHookBeforeResetEvent = {
+  sessionFile?: string;
+  messages?: unknown[];
+  reason?: string;
+};
+
 // ---------------------------------------------------------------------------
 // Hook Handler Map — maps hook names to typed handler signatures
 // ---------------------------------------------------------------------------
@@ -141,9 +160,21 @@ export type PluginHookHandlerMap = {
     event: PluginHookBeforeAgentStartEvent,
     ctx: PluginHookAgentContext,
   ) => Promise<PluginHookBeforeAgentStartResult | void> | PluginHookBeforeAgentStartResult | void;
+  session_start: (
+    event: PluginHookSessionStartEvent,
+    ctx: PluginHookAgentContext,
+  ) => Promise<void> | void;
   session_end: (
     event: PluginHookSessionEndEvent,
     ctx: PluginHookSessionEndContext,
+  ) => Promise<void> | void;
+  before_compaction: (
+    event: PluginHookBeforeCompactionEvent,
+    ctx: PluginHookAgentContext,
+  ) => Promise<void> | void;
+  before_reset: (
+    event: PluginHookBeforeResetEvent,
+    ctx: PluginHookAgentContext,
   ) => Promise<void> | void;
   message_received: (
     event: PluginHookMessageReceivedEvent,
