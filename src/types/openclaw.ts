@@ -203,8 +203,16 @@ export type OpenClawPluginToolOptions = {
 // CLI Types (Section 6)
 // ---------------------------------------------------------------------------
 
+export type CommanderLikeCommand = {
+  command(nameAndArgs: string): CommanderLikeCommand;
+  description(str: string): CommanderLikeCommand;
+  option(flags: string, description: string): CommanderLikeCommand;
+  requiredOption(flags: string, description: string): CommanderLikeCommand;
+  action(fn: (...args: any[]) => void | Promise<void>): CommanderLikeCommand;
+};
+
 export type OpenClawPluginCliContext = {
-  program: unknown;
+  program: CommanderLikeCommand;
   config: unknown;
   workspaceDir?: string;
   logger: PluginLogger;
