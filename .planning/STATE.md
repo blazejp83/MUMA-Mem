@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Agents automatically receive the right memories at the right time without explicit tool calls — scoped by visibility and domain, decayed by relevance, and consolidated from episodes into durable knowledge.
-**Current focus:** v1.0 MVP shipped — planning next milestone
+**Current focus:** v1.1 Integration — align plugin layer with OpenClaw SDK
 
 ## Current Position
 
-Phase: 5 of 5 (Background Intelligence)
-Plan: All complete
-Status: v1.0 MVP shipped
-Last activity: 2026-02-15 — v1.0 milestone complete
+Phase: 6 of 11 (Integration Types)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-02-16 - Milestone v1.1 created
 
-Progress: ██████████ 100%
+Progress: ░░░░░░░░░░ 0%
 
 ## Performance Metrics
 
@@ -37,7 +37,7 @@ Progress: ██████████ 100%
 
 ### Decisions
 
-All decisions logged in PROJECT.md Key Decisions table with outcomes marked.
+All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes marked.
 
 ### Pending Todos
 
@@ -47,8 +47,12 @@ None.
 
 None.
 
+### Roadmap Evolution
+
+- Milestone v1.1 Integration created: OpenClaw SDK alignment, 6 phases (Phase 6-11)
+
 ## Session Continuity
 
-Last session: 2026-02-15
-Stopped at: v1.0 milestone complete
+Last session: 2026-02-16
+Stopped at: Milestone v1.1 initialization
 Resume file: None

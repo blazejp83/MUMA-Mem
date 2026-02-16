@@ -11,6 +11,7 @@ None
 ## Milestones
 
 - ✅ **v1.0 MVP** — Phases 1-5 (shipped 2026-02-15)
+- 🚧 **v1.1 Integration** — Phases 6-11 (in progress)
 
 ## Completed Milestones
 
@@ -29,10 +30,74 @@ None
 
 </details>
 
+### 🚧 v1.1 Integration (In Progress)
+
+**Milestone Goal:** Align MUMA-Mem's plugin layer with the actual OpenClaw plugin SDK — fix hook signatures, tool registration, CLI bridge, and add integration tests.
+
+#### Phase 6: Integration Types
+
+**Goal**: Establish OpenClaw type foundations — deriveUserId helper, OpenClaw types as devDependency, fix plugin definition shape
+**Depends on**: Previous milestone complete
+**Research**: Unlikely (spec provides exact shapes, internal refactoring)
+**Plans**: TBD
+
+Plans:
+- [ ] 06-01: TBD (run /gsd:plan-phase 6 to break down)
+
+#### Phase 7: Hook Alignment
+
+**Goal**: Rewrite all 6 hook handlers to (event, ctx) two-arg signatures with correct return shapes
+**Depends on**: Phase 6
+**Research**: Unlikely (spec defines all signatures and fixes)
+**Plans**: TBD
+
+Plans:
+- [ ] 07-01: TBD
+
+#### Phase 8: Tool Factory
+
+**Goal**: Convert 10 tools to factory pattern with correct execute(toolCallId, params) signature, underscore naming, and labels
+**Depends on**: Phase 6
+**Research**: Unlikely (spec defines factory pattern; JSON Schema vs TypeBox needs quick validation)
+**Plans**: TBD
+
+Plans:
+- [ ] 08-01: TBD
+
+#### Phase 9: CLI Bridge
+
+**Goal**: Add Commander-based CLI registration for OpenClaw integration (dual CLI, Option A — keep standalone + add OpenClaw subcommands)
+**Depends on**: Phase 6
+**Research**: Unlikely (spec outlines structure; Commander is well-known)
+**Plans**: TBD
+
+Plans:
+- [ ] 09-01: TBD
+
+#### Phase 10: Hook Extensions
+
+**Goal**: Add session_start, before_compaction, and before_reset hooks for eager initialization and better memory capture
+**Depends on**: Phase 7
+**Research**: Unlikely (spec defines available hooks and recommended additions)
+**Plans**: TBD
+
+Plans:
+- [ ] 10-01: TBD
+
+#### Phase 11: Integration Tests
+
+**Goal**: Mock OpenClawPluginApi and test full lifecycle — registration, hooks, tools, userId derivation
+**Depends on**: Phase 8, Phase 9, Phase 10
+**Research**: Unlikely (mock-based testing, standard patterns)
+**Plans**: TBD
+
+Plans:
+- [ ] 11-01: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -41,3 +106,9 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 3. Intelligence | v1.0 | 3/3 | Complete | 2026-02-15 |
 | 4. Multi-Agent | v1.0 | 4/4 | Complete | 2026-02-15 |
 | 5. Background Intelligence | v1.0 | 4/4 | Complete | 2026-02-15 |
+| 6. Integration Types | v1.1 | 0/? | Not started | - |
+| 7. Hook Alignment | v1.1 | 0/? | Not started | - |
+| 8. Tool Factory | v1.1 | 0/? | Not started | - |
+| 9. CLI Bridge | v1.1 | 0/? | Not started | - |
+| 10. Hook Extensions | v1.1 | 0/? | Not started | - |
+| 11. Integration Tests | v1.1 | 0/? | Not started | - |
