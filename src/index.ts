@@ -1,5 +1,6 @@
 import { MumaConfigSchema } from "./config.js";
 import { registerPlugin } from "./plugin.js";
+import type { OpenClawPluginDefinition } from "./types/openclaw.js";
 
 // Re-export types for consumers
 export type { Note, NoteCreate, NoteUpdate, Visibility, MemorySource, WriteOperation } from "./types/note.js";
@@ -22,11 +23,37 @@ export { consolidate, distillMemoryMd, writeMemoryMdFile } from "./consolidation
 export type { ConsolidationReport } from "./consolidation/index.js";
 export type { ConflictType, MemoryConflict } from "./types/note.js";
 
-const memoryMumaPlugin = {
+// Re-export OpenClaw SDK types for consumers
+export type {
+  PluginLogger,
+  OpenClawPluginApi,
+  PluginHookBeforeAgentStartEvent,
+  PluginHookAgentContext,
+  PluginHookBeforeAgentStartResult,
+  PluginHookSessionEndEvent,
+  PluginHookSessionEndContext,
+  PluginHookMessageReceivedEvent,
+  PluginHookMessageReceivedContext,
+  PluginHookAfterToolCallEvent,
+  PluginHookAfterToolCallContext,
+  PluginHookGatewayStartEvent,
+  PluginHookGatewayStopEvent,
+  PluginHookGatewayContext,
+  OpenClawPluginToolContext,
+  AgentTool,
+  OpenClawPluginToolFactory,
+  OpenClawPluginToolOptions,
+  OpenClawPluginCliContext,
+  OpenClawPluginCliRegistrar,
+  OpenClawPluginDefinition,
+} from "./types/openclaw.js";
+
+const memoryMumaPlugin: OpenClawPluginDefinition = {
   id: "memory-muma",
   name: "MUMA-Mem",
   description: "Multi-user multi-agent memory with ACT-R activation, Ebbinghaus forgetting, and semantic note linking",
-  kind: "memory" as const,
+  version: "0.1.0",
+  kind: "memory",
   configSchema: MumaConfigSchema,
   register: registerPlugin,
 };
