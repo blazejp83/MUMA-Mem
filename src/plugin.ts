@@ -107,6 +107,13 @@ export function registerPlugin(api: OpenClawPluginApi): void {
   // Store config as module-level singleton for access by other modules
   mumaConfig = config;
 
+  // Register agent tools via factory pattern (PLUG-06 + PLUG-07)
+  // With the factory pattern, registerTool just registers the factory —
+  // OpenClaw calls it per-session when tools are needed. By that time,
+  // gateway_start will have initialized all singletons (store, embedding, etc.).
+  registerTools(api);
+  api.logger.info("[muma-mem] Agent tools registered.");
+
   // gateway_start: initialize storage + embedding
   api.on("gateway_start", async (_event: PluginHookGatewayStartEvent, _ctx: PluginHookGatewayContext) => {
     api.logger.info("[muma-mem] Initializing...");
@@ -175,10 +182,6 @@ export function registerPlugin(api: OpenClawPluginApi): void {
       );
       api.logger.info("[muma-mem] Consolidation: daily");
     }
-
-    // 10. Register agent tools (PLUG-06 + PLUG-07)
-    registerTools(api);
-    api.logger.info("[muma-mem] Agent tools registered.");
 
     api.logger.info("[muma-mem] Ready.");
   });
