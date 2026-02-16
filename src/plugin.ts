@@ -99,7 +99,7 @@ export function getTransactiveIndex(): TransactiveMemoryIndex | null {
   return transactiveIndex;
 }
 
-export function registerPlugin(api: any): void {
+export function registerPlugin(api: OpenClawPluginApi): void {
   // Parse and validate config
   const rawConfig = api.pluginConfig ?? {};
   const config: MumaConfig = MumaConfigSchema.parse(rawConfig);
@@ -108,7 +108,7 @@ export function registerPlugin(api: any): void {
   mumaConfig = config;
 
   // gateway_start: initialize storage + embedding
-  api.on("gateway_start", async () => {
+  api.on("gateway_start", async (_event: PluginHookGatewayStartEvent, _ctx: PluginHookGatewayContext) => {
     api.logger.info("[muma-mem] Initializing...");
 
     // 1. Create embedding provider
@@ -238,9 +238,12 @@ export function registerPlugin(api: any): void {
   });
 
   // PLUG-03: session_end — promote high-activation L1 items to L2, discard rest
-  api.on("session_end", async (event: any) => {
+  api.on("session_end", async (event: PluginHookSessionEndEvent, ctx: PluginHookSessionEndContext) => {
     const sessionId: string | undefined = event.sessionId;
     if (!sessionId) return;
+
+    const agentId = ctx.agentId ?? "unknown";
+    const userId = deriveUserId(undefined); // session_end ctx has no sessionKey; "default" fallback is acceptable
 
     const wm = sessions.get(sessionId);
     if (!wm) return;
@@ -346,7 +349,7 @@ export function registerPlugin(api: any): void {
   });
 
   // gateway_stop: cleanup
-  api.on("gateway_stop", async () => {
+  api.on("gateway_stop", async (_event: PluginHookGatewayStopEvent, _ctx: PluginHookGatewayContext) => {
     api.logger.info("[muma-mem] Shutting down...");
 
     // Clear all working memory sessions

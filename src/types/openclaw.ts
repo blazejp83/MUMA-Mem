@@ -45,7 +45,9 @@ export type OpenClawPluginApi = {
   ) => void;
   on: <K extends string>(
     hookName: K,
-    handler: (...args: unknown[]) => unknown,
+    handler: K extends keyof PluginHookHandlerMap
+      ? PluginHookHandlerMap[K]
+      : (...args: unknown[]) => unknown,
     opts?: { priority?: number },
   ) => void;
   resolvePath: (input: string) => string;
@@ -128,6 +130,37 @@ export type PluginHookGatewayStopEvent = {
 // 3.5 / 3.6 shared gateway context
 export type PluginHookGatewayContext = {
   port?: number;
+};
+
+// ---------------------------------------------------------------------------
+// Hook Handler Map — maps hook names to typed handler signatures
+// ---------------------------------------------------------------------------
+
+export type PluginHookHandlerMap = {
+  before_agent_start: (
+    event: PluginHookBeforeAgentStartEvent,
+    ctx: PluginHookAgentContext,
+  ) => Promise<PluginHookBeforeAgentStartResult | void> | PluginHookBeforeAgentStartResult | void;
+  session_end: (
+    event: PluginHookSessionEndEvent,
+    ctx: PluginHookSessionEndContext,
+  ) => Promise<void> | void;
+  message_received: (
+    event: PluginHookMessageReceivedEvent,
+    ctx: PluginHookMessageReceivedContext,
+  ) => Promise<void> | void;
+  after_tool_call: (
+    event: PluginHookAfterToolCallEvent,
+    ctx: PluginHookAfterToolCallContext,
+  ) => Promise<void> | void;
+  gateway_start: (
+    event: PluginHookGatewayStartEvent,
+    ctx: PluginHookGatewayContext,
+  ) => Promise<void> | void;
+  gateway_stop: (
+    event: PluginHookGatewayStopEvent,
+    ctx: PluginHookGatewayContext,
+  ) => Promise<void> | void;
 };
 
 // ---------------------------------------------------------------------------
