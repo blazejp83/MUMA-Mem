@@ -64,15 +64,15 @@ Plans:
 Plans:
 - [x] 08-01: Tool factory conversion (all 10 tools rewritten with factory pattern) -- completed 2026-02-16
 
-#### Phase 9: CLI Bridge
+#### Phase 9: CLI Bridge -- Complete
 
 **Goal**: Add Commander-based CLI registration for OpenClaw integration (dual CLI, Option A — keep standalone + add OpenClaw subcommands)
 **Depends on**: Phase 6
 **Research**: Unlikely (spec outlines structure; Commander is well-known)
-**Plans**: TBD
+**Plans**: 1
 
 Plans:
-- [ ] 09-01: TBD
+- [x] 09-01: OpenClaw CLI registrar (CommanderLikeCommand type, registerMemoryCli, 4 subcommands) -- completed 2026-02-17
 
 #### Phase 10: Hook Extensions
 
@@ -109,6 +109,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Integration Types | v1.1 | 1/1 | Complete | 2026-02-16 |
 | 7. Hook Alignment | v1.1 | 1/1 | Complete | 2026-02-16 |
 | 8. Tool Factory | v1.1 | 1/1 | Complete | 2026-02-16 |
-| 9. CLI Bridge | v1.1 | 0/? | Not started | - |
+| 9. CLI Bridge | v1.1 | 1/1 | Complete | 2026-02-17 |
 | 10. Hook Extensions | v1.1 | 0/? | Not started | - |
 | 11. Integration Tests | v1.1 | 0/? | Not started | - |
