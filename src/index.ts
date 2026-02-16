@@ -22,6 +22,7 @@ export type { AgentProfile } from "./access/index.js";
 export { consolidate, distillMemoryMd, writeMemoryMdFile } from "./consolidation/index.js";
 export type { ConsolidationReport } from "./consolidation/index.js";
 export type { ConflictType, MemoryConflict } from "./types/note.js";
+export { deriveUserId, deriveUserIdFromMessageCtx } from "./utils/index.js";
 
 // Re-export OpenClaw SDK types for consumers
 export type {
