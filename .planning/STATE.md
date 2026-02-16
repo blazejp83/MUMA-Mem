@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 
 ## Current Position
 
-Phase: 6 of 11 (Integration Types)
+Phase: 7 of 11 (Hook Alignment)
 Plan: 1 of 1 in current phase
 Status: Phase complete
-Last activity: 2026-02-16 - Completed 06-01-PLAN.md
+Last activity: 2026-02-16 - Completed 07-01-PLAN.md
 
-Progress: █░░░░░░░░░ 10%
+Progress: ████████░░ 85%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 22
+- Total plans completed: 23
 - Average duration: 4 min
-- Total execution time: 88 min
+- Total execution time: 91 min
 
 **By Phase:**
 
@@ -33,6 +33,7 @@ Progress: █░░░░░░░░░ 10%
 | 4. Multi-Agent | 4/4 | 7 min | 2 min |
 | 5. Background Intelligence | 4/4 | 16 min | 4 min |
 | 6. Integration Types | 1/1 | 2 min | 2 min |
+| 7. Hook Alignment | 1/1 | 3 min | 3 min |
 
 ## Accumulated Context
 
@@ -44,6 +45,8 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes marked
 |-------|----------|-----------|
 | 6 | Local SDK type definitions (no npm dep) | OpenClaw SDK not published as npm package |
 | 6 | deriveUserId returns "default" for unparseable keys | Graceful degradation over throwing |
+| 7 | Added PluginHookHandlerMap for type-safe api.on() | Resolves TS mismatch between generic handler and typed handlers |
+| 7 | Removed L1 capture from message_received/after_tool_call | Context lacks sessionId; deferred to Phase 10 |
 
 ### Pending Todos
 
@@ -60,5 +63,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 06-01-PLAN.md (Phase 6 complete)
+Stopped at: Completed 07-01-PLAN.md (Phase 7 complete)
 Resume file: None

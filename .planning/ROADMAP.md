@@ -44,15 +44,15 @@ None
 Plans:
 - [x] 06-01: OpenClaw type foundations (types, deriveUserId, plugin definition) -- completed 2026-02-16
 
-#### Phase 7: Hook Alignment
+#### Phase 7: Hook Alignment -- Complete
 
 **Goal**: Rewrite all 6 hook handlers to (event, ctx) two-arg signatures with correct return shapes
 **Depends on**: Phase 6
 **Research**: Unlikely (spec defines all signatures and fixes)
-**Plans**: TBD
+**Plans**: 1
 
 Plans:
-- [ ] 07-01: TBD
+- [x] 07-01: Hook alignment (all 6 hooks rewritten with typed signatures) -- completed 2026-02-16
 
 #### Phase 8: Tool Factory
 
@@ -107,7 +107,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 4. Multi-Agent | v1.0 | 4/4 | Complete | 2026-02-15 |
 | 5. Background Intelligence | v1.0 | 4/4 | Complete | 2026-02-15 |
 | 6. Integration Types | v1.1 | 1/1 | Complete | 2026-02-16 |
-| 7. Hook Alignment | v1.1 | 0/? | Not started | - |
+| 7. Hook Alignment | v1.1 | 1/1 | Complete | 2026-02-16 |
 | 8. Tool Factory | v1.1 | 0/? | Not started | - |
 | 9. CLI Bridge | v1.1 | 0/? | Not started | - |
 | 10. Hook Extensions | v1.1 | 0/? | Not started | - |
