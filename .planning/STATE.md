@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 
 ## Current Position
 
-Phase: 7 of 11 (Hook Alignment)
+Phase: 8 of 11 (Tool Factory)
 Plan: 1 of 1 in current phase
 Status: Phase complete
-Last activity: 2026-02-16 - Completed 07-01-PLAN.md
+Last activity: 2026-02-16 - Completed 08-01-PLAN.md
 
-Progress: ████████░░ 85%
+Progress: ████████░░ 88%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 23
+- Total plans completed: 24
 - Average duration: 4 min
-- Total execution time: 91 min
+- Total execution time: 94 min
 
 **By Phase:**
 
@@ -34,6 +34,7 @@ Progress: ████████░░ 85%
 | 5. Background Intelligence | 4/4 | 16 min | 4 min |
 | 6. Integration Types | 1/1 | 2 min | 2 min |
 | 7. Hook Alignment | 1/1 | 3 min | 3 min |
+| 8. Tool Factory | 1/1 | 3 min | 3 min |
 
 ## Accumulated Context
 
@@ -47,6 +48,9 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes marked
 | 6 | deriveUserId returns "default" for unparseable keys | Graceful degradation over throwing |
 | 7 | Added PluginHookHandlerMap for type-safe api.on() | Resolves TS mismatch between generic handler and typed handlers |
 | 7 | Removed L1 capture from message_received/after_tool_call | Context lacks sessionId; deferred to Phase 10 |
+| 8 | Keep JSON Schema parameters (no TypeBox switch) | JSON Schema compatible; TypeBox would add unnecessary dependency |
+| 8 | L1 lookup removed from memory_get_context | Factory ctx has sessionKey not sessionId; deferred to Phase 10 |
+| 8 | Tool registration at register() time, not gateway_start | Factory pattern defers instantiation to per-session calls |
 
 ### Pending Todos
 
@@ -63,5 +67,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 07-01-PLAN.md (Phase 7 complete)
+Stopped at: Completed 08-01-PLAN.md (Phase 8 complete)
 Resume file: None
