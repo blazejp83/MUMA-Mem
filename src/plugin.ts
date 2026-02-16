@@ -15,6 +15,22 @@ import type { EventBus } from "./sync/index.js";
 import { createEventBus, FilesystemSync } from "./sync/index.js";
 import { TransactiveMemoryIndex, createTransactiveIndex } from "./access/index.js";
 import { startSweepScheduler, startConsolidationScheduler } from "./daemon/index.js";
+import type {
+  OpenClawPluginApi,
+  PluginHookBeforeAgentStartEvent,
+  PluginHookAgentContext,
+  PluginHookBeforeAgentStartResult,
+  PluginHookMessageReceivedEvent,
+  PluginHookMessageReceivedContext,
+  PluginHookAfterToolCallEvent,
+  PluginHookAfterToolCallContext,
+  PluginHookSessionEndEvent,
+  PluginHookSessionEndContext,
+  PluginHookGatewayStartEvent,
+  PluginHookGatewayStopEvent,
+  PluginHookGatewayContext,
+} from "./types/openclaw.js";
+import { deriveUserId, deriveUserIdFromMessageCtx } from "./utils/index.js";
 import * as os from "node:os";
 import * as path from "node:path";
 
@@ -168,16 +184,16 @@ export function registerPlugin(api: any): void {
   });
 
   // PLUG-02: before_agent_start — inject combined L1 + L2 context
-  api.on("before_agent_start", async (event: any) => {
+  api.on("before_agent_start", async (event: PluginHookBeforeAgentStartEvent, ctx: PluginHookAgentContext): Promise<PluginHookBeforeAgentStartResult | void> => {
     try {
       // Guard: skip if store or embedding not ready
       if (!store || !embeddingProvider) return;
 
-      const sessionId: string | undefined = event.sessionId;
-      const userId: string | undefined = event.userId;
-      const agentId: string | undefined = event.agentId;
+      const sessionId: string | undefined = ctx.sessionId;
+      const userId: string = deriveUserId(ctx.sessionKey);
+      const agentId: string | undefined = ctx.agentId;
 
-      if (!userId || !agentId) return;
+      if (!agentId) return;
 
       const memories: string[] = [];
 
@@ -193,7 +209,7 @@ export function registerPlugin(api: any): void {
       }
 
       // L2: Search persistent memory for relevant context
-      const queryText = event.lastMessage || event.systemPrompt || "";
+      const queryText = event.prompt || "";
       if (queryText && store) {
         try {
           const l2Results = await search({
@@ -215,14 +231,7 @@ export function registerPlugin(api: any): void {
       // Format and return context for injection
       const formatted = "## Relevant Memories\n\n" + memories.map((m) => `- ${m}`).join("\n");
 
-      // Return context via event property or return value
-      if (typeof event.addContext === "function") {
-        event.addContext(formatted);
-      } else {
-        event.memoryContext = formatted;
-      }
-
-      return { context: formatted };
+      return { prependContext: formatted };
     } catch (err) {
       api.logger.warn(`[muma-mem] Context injection failed: ${err}`);
     }
@@ -272,34 +281,25 @@ export function registerPlugin(api: any): void {
 
   // PLUG-04: Episodic capture hooks
   // message_received — capture user messages as "told" memories
-  api.on("message_received", async (event: any) => {
-    // Only capture user messages (not system or assistant)
-    if (event.role !== "user") return;
+  api.on("message_received", async (event: PluginHookMessageReceivedEvent, ctx: PluginHookMessageReceivedContext) => {
+    // All message_received events are user messages (no role field)
     // Skip short messages (less than 20 chars — greetings, acks)
     if (!event.content || event.content.length < 20) return;
 
-    // L1: Populate working memory (even without LLM)
-    if (event.sessionId && embeddingProvider) {
-      try {
-        const wm = getOrCreateSession(event.sessionId, config);
-        const embedding = await embeddingProvider.embed(event.content);
-        wm.add(event.content, embedding, {
-          agentId: event.agentId ?? "unknown",
-          userId: event.userId,
-          source: "told",
-        });
-      } catch (err) {
-        api.logger.warn(`[muma-mem] L1 capture failed: ${err}`);
-      }
-    }
+    // Derive userId from message context (channelId + accountId)
+    const userId = deriveUserIdFromMessageCtx(ctx);
+
+    // Note: L1 working memory capture not possible here —
+    // message_received context has no sessionId or agentId.
+    // L1 capture will be handled in Phase 10 via session_start/before_compaction hooks.
 
     // L2: Write to persistent store (requires LLM)
     if (!llmProvider) return;
 
     try {
       await write(event.content, {
-        userId: event.userId,
-        agentId: event.agentId ?? "unknown",
+        userId,
+        agentId: "unknown",  // agentId not available in message_received context
         source: "told",  // User told the agent this
       });
     } catch (err) {
@@ -309,34 +309,35 @@ export function registerPlugin(api: any): void {
   });
 
   // after_tool_call — capture tool results as "experience" memories
-  api.on("after_tool_call", async (event: any) => {
+  api.on("after_tool_call", async (event: PluginHookAfterToolCallEvent, ctx: PluginHookAfterToolCallContext) => {
+    // Convert result to string (event.result is typed as unknown)
+    const resultStr = typeof event.result === "string"
+      ? event.result
+      : event.result != null
+        ? JSON.stringify(event.result)
+        : "";
+
     // Only capture tool results that contain meaningful data
-    if (!event.result || typeof event.result !== "string" || event.result.length < 50) return;
+    if (!resultStr || resultStr.length < 50) return;
 
-    const content = `Tool ${event.toolName} returned: ${event.result.substring(0, 500)}`;
+    const content = `Tool ${event.toolName} returned: ${resultStr.substring(0, 500)}`;
 
-    // L1: Populate working memory (even without LLM)
-    if (event.sessionId && embeddingProvider) {
-      try {
-        const wm = getOrCreateSession(event.sessionId, config);
-        const embedding = await embeddingProvider.embed(content);
-        wm.add(content, embedding, {
-          agentId: event.agentId ?? "unknown",
-          userId: event.userId,
-          source: "experience",
-        });
-      } catch (err) {
-        api.logger.warn(`[muma-mem] L1 tool capture failed: ${err}`);
-      }
-    }
+    // Derive userId and agentId from context
+    const userId = deriveUserId(ctx.sessionKey);
+    const agentId = ctx.agentId ?? "unknown";
+
+    // Note: L1 working memory capture not possible here —
+    // after_tool_call ctx has sessionKey but not sessionId.
+    // The sessions map is keyed by sessionId, so L1 lookup would fail.
+    // L1 capture for tool calls will be addressed in Phase 10.
 
     // L2: Write to persistent store (requires LLM)
     if (!llmProvider) return;
 
     try {
       await write(content, {
-        userId: event.userId,
-        agentId: event.agentId ?? "unknown",
+        userId,
+        agentId,
         source: "experience",  // Agent experienced this via tool
       });
     } catch (err) {
