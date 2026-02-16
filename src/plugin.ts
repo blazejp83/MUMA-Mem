@@ -5,6 +5,7 @@ import { createEmbeddingProvider } from "./embedding/factory.js";
 import { validateEmbeddingDimensions } from "./embedding/validation.js";
 import { createLLMProvider } from "./llm/factory.js";
 import { registerTools } from "./tools/index.js";
+import { registerMemoryCli } from "./cli/openclaw.js";
 import { write } from "./pipeline/write.js";
 import { search } from "./pipeline/read.js";
 import { WorkingMemory } from "./memory/index.js";
@@ -113,6 +114,9 @@ export function registerPlugin(api: OpenClawPluginApi): void {
   // gateway_start will have initialized all singletons (store, embedding, etc.).
   registerTools(api);
   api.logger.info("[muma-mem] Agent tools registered.");
+
+  registerMemoryCli(api);
+  api.logger.info("[muma-mem] CLI commands registered.");
 
   // gateway_start: initialize storage + embedding
   api.on("gateway_start", async (_event: PluginHookGatewayStartEvent, _ctx: PluginHookGatewayContext) => {
