@@ -21,6 +21,9 @@ import type {
   PluginHookBeforeAgentStartEvent,
   PluginHookAgentContext,
   PluginHookBeforeAgentStartResult,
+  PluginHookSessionStartEvent,
+  PluginHookBeforeCompactionEvent,
+  PluginHookBeforeResetEvent,
   PluginHookMessageReceivedEvent,
   PluginHookMessageReceivedContext,
   PluginHookAfterToolCallEvent,
@@ -48,6 +51,10 @@ let consolidationCleanup: (() => void) | null = null;
 
 // Per-session L1 working memory stores
 const sessions: Map<string, WorkingMemory> = new Map();
+
+// Reverse lookup: sessionKey → sessionId (populated by session_start)
+// Enables L1 capture in hooks that only have sessionKey (e.g. after_tool_call)
+const sessionKeyToId: Map<string, string> = new Map();
 
 /**
  * Get or create a WorkingMemory instance for a given session.
@@ -190,6 +197,23 @@ export function registerPlugin(api: OpenClawPluginApi): void {
     api.logger.info("[muma-mem] Ready.");
   });
 
+  // session_start: eagerly create WorkingMemory and establish sessionKey→sessionId mapping
+  api.on("session_start", async (_event: PluginHookSessionStartEvent, ctx: PluginHookAgentContext) => {
+    if (!ctx.sessionId) return;
+    const cfg = mumaConfig;
+    if (!cfg) return;
+
+    // Eagerly create WorkingMemory for this session
+    getOrCreateSession(ctx.sessionId, cfg);
+
+    // Establish sessionKey→sessionId mapping for hooks that only have sessionKey
+    if (ctx.sessionKey) {
+      sessionKeyToId.set(ctx.sessionKey, ctx.sessionId);
+    }
+
+    api.logger.info(`[muma-mem] Session started: ${ctx.sessionId}`);
+  });
+
   // PLUG-02: before_agent_start — inject combined L1 + L2 context
   api.on("before_agent_start", async (event: PluginHookBeforeAgentStartEvent, ctx: PluginHookAgentContext): Promise<PluginHookBeforeAgentStartResult | void> => {
     try {
@@ -286,6 +310,95 @@ export function registerPlugin(api: OpenClawPluginApi): void {
       // Always clean up
       wm.clear();
       sessions.delete(sessionId);
+      // Clean up sessionKey→sessionId mapping (reverse lookup since ctx has no sessionKey)
+      for (const [key, id] of sessionKeyToId.entries()) {
+        if (id === sessionId) {
+          sessionKeyToId.delete(key);
+          break;
+        }
+      }
+    }
+  });
+
+  // before_compaction: promote high-activation L1 items to L2 (session continues after compaction)
+  api.on("before_compaction", async (event: PluginHookBeforeCompactionEvent, ctx: PluginHookAgentContext) => {
+    const sessionId = ctx.sessionId;
+    if (!sessionId) return;
+
+    const wm = sessions.get(sessionId);
+    if (!wm || wm.size === 0) return;
+
+    const cfg = mumaConfig;
+    if (!cfg || !llmProvider) return;
+
+    const threshold = cfg.activation.retrievalThreshold;
+    const promoted = wm.getTopActivated(threshold);
+    let promotedCount = 0;
+
+    for (const item of promoted) {
+      try {
+        await write(item.content, {
+          userId: item.userId,
+          agentId: item.agentId,
+          source: item.source,
+        });
+        promotedCount++;
+      } catch {
+        // Skip individual promotion failures
+      }
+    }
+
+    // Do NOT clear L1 — session continues after compaction
+    api.logger.info(
+      `[muma-mem] Pre-compaction: promoted ${promotedCount} items from L1 to L2 (session ${sessionId}, ${event.messageCount} messages)`,
+    );
+  });
+
+  // before_reset: promote ALL L1 items to L2 and clean up (session will restart)
+  api.on("before_reset", async (event: PluginHookBeforeResetEvent, ctx: PluginHookAgentContext) => {
+    const sessionId = ctx.sessionId;
+    if (!sessionId) return;
+
+    const wm = sessions.get(sessionId);
+    if (!wm || wm.size === 0) {
+      // Clean up mapping even if no working memory
+      if (ctx.sessionKey) sessionKeyToId.delete(ctx.sessionKey);
+      sessions.delete(sessionId);
+      return;
+    }
+
+    const cfg = mumaConfig;
+
+    try {
+      if (llmProvider && cfg) {
+        const threshold = cfg.activation.retrievalThreshold;
+        const promoted = wm.getTopActivated(threshold);
+        let promotedCount = 0;
+        const totalCount = wm.size;
+
+        for (const item of promoted) {
+          try {
+            await write(item.content, {
+              userId: item.userId,
+              agentId: item.agentId,
+              source: item.source,
+            });
+            promotedCount++;
+          } catch {
+            // Skip individual failures
+          }
+        }
+
+        api.logger.info(
+          `[muma-mem] Pre-reset: promoted ${promotedCount}/${totalCount} items to L2 (session ${sessionId}, reason: ${event.reason ?? "unknown"})`,
+        );
+      }
+    } catch (err) {
+      api.logger.warn(`[muma-mem] Pre-reset promotion failed: ${err}`);
+    } finally {
+      wm.clear();
+      sessions.delete(sessionId);
+      if (ctx.sessionKey) sessionKeyToId.delete(ctx.sessionKey);
     }
   });
 
@@ -336,10 +449,19 @@ export function registerPlugin(api: OpenClawPluginApi): void {
     const userId = deriveUserId(ctx.sessionKey);
     const agentId = ctx.agentId ?? "unknown";
 
-    // Note: L1 working memory capture not possible here —
-    // after_tool_call ctx has sessionKey but not sessionId.
-    // The sessions map is keyed by sessionId, so L1 lookup would fail.
-    // L1 capture for tool calls will be addressed in Phase 10.
+    // L1: Add to working memory if session is active
+    const sessionId = ctx.sessionKey ? sessionKeyToId.get(ctx.sessionKey) : undefined;
+    if (sessionId && embeddingProvider && mumaConfig) {
+      const wm = sessions.get(sessionId);
+      if (wm) {
+        try {
+          const embedding = await embeddingProvider.embed(content);
+          wm.add(content, embedding, { agentId, userId, source: "experience" });
+        } catch {
+          // Non-blocking — L1 capture is best-effort
+        }
+      }
+    }
 
     // L2: Write to persistent store (requires LLM)
     if (!llmProvider) return;
@@ -359,11 +481,12 @@ export function registerPlugin(api: OpenClawPluginApi): void {
   api.on("gateway_stop", async (_event: PluginHookGatewayStopEvent, _ctx: PluginHookGatewayContext) => {
     api.logger.info("[muma-mem] Shutting down...");
 
-    // Clear all working memory sessions
+    // Clear all working memory sessions and sessionKey→sessionId mapping
     for (const wm of sessions.values()) {
       wm.clear();
     }
     sessions.clear();
+    sessionKeyToId.clear();
 
     // Stop decay sweep scheduler
     if (sweepCleanup) {
