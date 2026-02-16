@@ -34,15 +34,15 @@ None
 
 **Milestone Goal:** Align MUMA-Mem's plugin layer with the actual OpenClaw plugin SDK — fix hook signatures, tool registration, CLI bridge, and add integration tests.
 
-#### Phase 6: Integration Types
+#### Phase 6: Integration Types -- Complete
 
 **Goal**: Establish OpenClaw type foundations — deriveUserId helper, OpenClaw types as devDependency, fix plugin definition shape
 **Depends on**: Previous milestone complete
 **Research**: Unlikely (spec provides exact shapes, internal refactoring)
-**Plans**: TBD
+**Plans**: 1
 
 Plans:
-- [ ] 06-01: TBD (run /gsd:plan-phase 6 to break down)
+- [x] 06-01: OpenClaw type foundations (types, deriveUserId, plugin definition) -- completed 2026-02-16
 
 #### Phase 7: Hook Alignment
 
@@ -106,7 +106,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Intelligence | v1.0 | 3/3 | Complete | 2026-02-15 |
 | 4. Multi-Agent | v1.0 | 4/4 | Complete | 2026-02-15 |
 | 5. Background Intelligence | v1.0 | 4/4 | Complete | 2026-02-15 |
-| 6. Integration Types | v1.1 | 0/? | Not started | - |
+| 6. Integration Types | v1.1 | 1/1 | Complete | 2026-02-16 |
 | 7. Hook Alignment | v1.1 | 0/? | Not started | - |
 | 8. Tool Factory | v1.1 | 0/? | Not started | - |
 | 9. CLI Bridge | v1.1 | 0/? | Not started | - |
