@@ -26,7 +26,7 @@ Agents automatically receive the right memories at the right time without explic
 ### Via OpenClaw CLI (recommended)
 
 ```bash
-openclaw plugins install @openclaw/memory-muma
+openclaw plugins install @risitech/memory-muma
 ```
 
 This downloads the package from npm, installs it to `~/.openclaw/extensions/memory-muma/`, installs dependencies, and enables it in your config automatically.
@@ -38,7 +38,7 @@ This downloads the package from npm, installs it to `~/.openclaw/extensions/memo
 openclaw plugins install --link /path/to/promem
 
 # Or add as a workspace dependency
-pnpm add @openclaw/memory-muma
+pnpm add @risitech/memory-muma
 ```
 
 Requires Node.js 22+.
@@ -295,4 +295,10 @@ pnpm build
 
 ## License
 
-ISC
+Business Source License 1.1 (BUSL-1.1)
+
+Free for non-production use (development, testing, personal projects). Production use requires a commercial license from [RisiTech](https://risitech.pl).
+
+Converts to Apache 2.0 on 2029-02-17 (3 years from initial release).
+
+See [LICENSE](LICENSE) for full terms.
