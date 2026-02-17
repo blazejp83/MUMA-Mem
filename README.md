@@ -23,42 +23,19 @@ For a detailed explanation of each technique and the research behind it, see [do
 | L4 Daemon | Background | Decay sweeps, consolidation, conflict detection |
 | L5 Plugin | OpenClaw integration | Hooks, tools, CLI, lifecycle management |
 
-## Installation
+## Quickstart
 
-### Via OpenClaw CLI (recommended)
+See [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) for a step-by-step walkthrough from install to first use.
+
+## Installation
 
 ```bash
 openclaw plugins install @risitech/memory-muma
 ```
 
-This downloads the package from npm, installs it to `~/.openclaw/extensions/memory-muma/`, installs dependencies, and enables it in your config automatically.
+Requires Node.js 22+. Uses Redis Stack 7.2+ for full features or SQLite as a zero-dependency fallback.
 
-### For local development
-
-```bash
-# Link from a local checkout (changes reflect immediately, no copy)
-openclaw plugins install --link /path/to/promem
-
-# Or add as a workspace dependency
-pnpm add @risitech/memory-muma
-```
-
-Requires Node.js 22+.
-
-### Storage Backends
-
-**Redis** (recommended) — full features including real-time cross-agent sync:
-
-```bash
-# Requires Redis Stack 7.2+ with RediSearch module
-docker run -d --name redis-stack -p 6379:6379 redis/redis-stack:latest
-```
-
-**SQLite** (zero-dependency fallback) — works without Redis, uses polling-based sync:
-
-```bash
-# No setup needed — creates ~/.openclaw/memory-muma.db automatically
-```
+For local development, storage backend setup, and building from source, see [docs/INSTALLATION.md](docs/INSTALLATION.md).
 
 ## Configuration
 
