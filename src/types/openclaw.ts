@@ -11,10 +11,10 @@
 // ---------------------------------------------------------------------------
 
 export type PluginLogger = {
-  debug?: (...args: unknown[]) => void;
-  info: (...args: unknown[]) => void;
-  warn: (...args: unknown[]) => void;
-  error: (...args: unknown[]) => void;
+  debug?: (message: string) => void;
+  info: (message: string) => void;
+  warn: (message: string) => void;
+  error: (message: string) => void;
 };
 
 // ---------------------------------------------------------------------------

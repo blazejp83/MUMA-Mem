@@ -68,7 +68,7 @@ describe("registerPlugin registration contract", () => {
 
     for (const hookName of expectedHooks) {
       expect(api._hooks.has(hookName), `hook '${hookName}' should be registered`).toBe(true);
-      expect(typeof api._hooks.get(hookName)).toBe("function");
+      expect(typeof api._hooks.get(hookName)!.handler).toBe("function");
     }
 
     expect(api._hooks.size).toBe(9);

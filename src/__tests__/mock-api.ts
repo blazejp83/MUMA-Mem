@@ -16,7 +16,7 @@ import type {
 
 export type MockApi = OpenClawPluginApi & {
   /** All hooks registered via api.on(hookName, handler) */
-  _hooks: Map<string, Function>;
+  _hooks: Map<string, { handler: Function; opts?: { priority?: number } }>;
   /** All tools registered via api.registerTool(factory, opts) */
   _tools: Array<{ factory: OpenClawPluginToolFactory | AgentTool; opts?: OpenClawPluginToolOptions }>;
   /** All CLI registrars registered via api.registerCli(registrar, opts) */
@@ -29,7 +29,7 @@ export type MockApi = OpenClawPluginApi & {
  * @param pluginConfig - Optional plugin config object (defaults to {} which triggers MumaConfigSchema defaults)
  */
 export function createMockApi(pluginConfig: Record<string, unknown> = {}): MockApi {
-  const hooks = new Map<string, Function>();
+  const hooks = new Map<string, { handler: Function; opts?: { priority?: number } }>();
   const tools: MockApi["_tools"] = [];
   const cli: MockApi["_cli"] = [];
 
@@ -52,18 +52,18 @@ export function createMockApi(pluginConfig: Record<string, unknown> = {}): MockA
     },
 
     // Registration methods — capture into internal arrays/maps
-    on: vi.fn((hookName: string, handler: Function) => {
-      hooks.set(hookName, handler);
+    on: vi.fn((hookName: string, handler: Function, opts?: { priority?: number }) => {
+      hooks.set(hookName, { handler, opts });
     }) as any,
 
     registerTool: vi.fn((factoryOrTool: OpenClawPluginToolFactory | AgentTool, opts?: OpenClawPluginToolOptions) => {
       tools.push({ factory: factoryOrTool, opts });
     }) as any,
 
-    registerHook: vi.fn((events: string | string[], handler: Function) => {
+    registerHook: vi.fn((events: string | string[], handler: Function, opts?: { priority?: number }) => {
       const names = Array.isArray(events) ? events : [events];
       for (const name of names) {
-        hooks.set(name, handler);
+        hooks.set(name, { handler, opts });
       }
     }) as any,
 
