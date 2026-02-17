@@ -84,15 +84,16 @@ Plans:
 Plans:
 - [x] 10-01: Hook extensions (session_start, before_compaction, before_reset + L1 capture in after_tool_call) -- completed 2026-02-17
 
-#### Phase 11: Integration Tests
+#### Phase 11: Integration Tests -- In Progress
 
 **Goal**: Mock OpenClawPluginApi and test full lifecycle — registration, hooks, tools, userId derivation
 **Depends on**: Phase 8, Phase 9, Phase 10
 **Research**: Unlikely (mock-based testing, standard patterns)
-**Plans**: TBD
+**Plans**: 2
 
 Plans:
-- [ ] 11-01: TBD
+- [x] 11-01: Registration and tool factory integration tests (mock API, 9 hooks, 10 tools, CLI, tool shape) -- completed 2026-02-17
+- [ ] 11-02: TBD
 
 ## Progress
 
@@ -111,4 +112,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Tool Factory | v1.1 | 1/1 | Complete | 2026-02-16 |
 | 9. CLI Bridge | v1.1 | 1/1 | Complete | 2026-02-17 |
 | 10. Hook Extensions | v1.1 | 1/1 | Complete | 2026-02-17 |
-| 11. Integration Tests | v1.1 | 0/? | Not started | - |
+| 11. Integration Tests | v1.1 | 1/2 | In progress | - |

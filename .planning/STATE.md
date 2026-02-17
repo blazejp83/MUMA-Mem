@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 
 ## Current Position
 
-Phase: 10 of 11 (Hook Extensions)
-Plan: 1 of 1 in current phase
-Status: Phase complete
-Last activity: 2026-02-17 - Completed 10-01-PLAN.md
+Phase: 11 of 11 (Integration Tests)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-17 - Completed 11-01-PLAN.md
 
 Progress: ██████████░ 96%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 26
+- Total plans completed: 27
 - Average duration: 4 min
-- Total execution time: 97 min
+- Total execution time: 100 min
 
 **By Phase:**
 
@@ -37,6 +37,7 @@ Progress: ██████████░ 96%
 | 8. Tool Factory | 1/1 | 3 min | 3 min |
 | 9. CLI Bridge | 1/1 | 1 min | 1 min |
 | 10. Hook Extensions | 1/1 | 2 min | 2 min |
+| 11. Integration Tests | 1/2 | 3 min | 3 min |
 
 ## Accumulated Context
 
@@ -58,6 +59,7 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes marked
 | 10 | sessionKeyToId reverse lookup for L1 capture | Avoids changing OpenClaw SDK context types; bridges sessionKey-only hooks to sessionId-keyed sessions |
 | 10 | before_compaction promotes without clearing L1 | Session continues after compaction; L1 data still needed |
 | 10 | before_reset promotes and clears L1 | Session restarts; full cleanup required |
+| 11 | vi.mock all heavy deps at module level in integration tests | Isolates registration-time from runtime behavior; avoids loading real store/embedding/LLM |
 
 ### Pending Todos
 
@@ -74,5 +76,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 10-01-PLAN.md (Phase 10 complete)
+Stopped at: Completed 11-01-PLAN.md (Phase 11, 1/2 plans done)
 Resume file: None
