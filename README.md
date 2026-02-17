@@ -95,7 +95,9 @@ The plugin ships with an `openclaw.plugin.json` manifest, so OpenClaw auto-disco
 
 ## Configuration
 
-All settings have sensible defaults. Override what you need in the `config` block:
+All settings have sensible defaults. Override what you need in the `config` block.
+
+The `identityMap` option lets the same human using multiple channels (e.g. Telegram + Discord) share one memory store. Keys are canonical user names, values are channel identities that resolve to them. Without it, each channel identity gets its own isolated memories.
 
 ```json
 {
@@ -137,6 +139,10 @@ All settings have sensible defaults. Override what you need in the `config` bloc
       "health": "user-only"
     },
     "domainBoost": 1.0
+  },
+  "identityMap": {
+    "alice": ["telegram:12345", "discord:98765"],
+    "bob": ["slack:U456"]
   },
   "agentMemory": {
     "code-agent": {
@@ -277,7 +283,7 @@ pnpm install
 # Type check
 pnpm run typecheck
 
-# Run tests (86 tests across 8 test files)
+# Run tests (98 tests across 8 test files)
 pnpm test
 
 # Build
