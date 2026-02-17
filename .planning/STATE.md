@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Agents automatically receive the right memories at the right time without explicit tool calls — scoped by visibility and domain, decayed by relevance, and consolidated from episodes into durable knowledge.
-**Current focus:** v1.1 Integration — align plugin layer with OpenClaw SDK
+**Current focus:** v1.1 Integration complete — plugin layer aligned with OpenClaw SDK
 
 ## Current Position
 
 Phase: 11 of 11 (Integration Tests)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-17 - Completed 11-01-PLAN.md
+Plan: 2 of 2 in current phase
+Status: Phase complete
+Last activity: 2026-02-17 - Completed 11-02-PLAN.md
 
-Progress: ██████████░ 96%
+Progress: ██████████ 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 27
+- Total plans completed: 28
 - Average duration: 4 min
-- Total execution time: 100 min
+- Total execution time: 104 min
 
 **By Phase:**
 
@@ -37,7 +37,7 @@ Progress: ██████████░ 96%
 | 8. Tool Factory | 1/1 | 3 min | 3 min |
 | 9. CLI Bridge | 1/1 | 1 min | 1 min |
 | 10. Hook Extensions | 1/1 | 2 min | 2 min |
-| 11. Integration Tests | 1/2 | 3 min | 3 min |
+| 11. Integration Tests | 2/2 | 7 min | 4 min |
 
 ## Accumulated Context
 
@@ -60,6 +60,8 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes marked
 | 10 | before_compaction promotes without clearing L1 | Session continues after compaction; L1 data still needed |
 | 10 | before_reset promotes and clears L1 | Session restarts; full cleanup required |
 | 11 | vi.mock all heavy deps at module level in integration tests | Isolates registration-time from runtime behavior; avoids loading real store/embedding/LLM |
+| 11 | vi.hoisted() for mock objects in lifecycle tests | Vitest hoists vi.mock factories; top-level variables not accessible without vi.hoisted |
+| 11 | Constructor function pattern for class mocks | vi.fn().mockImplementation not reliable for class constructors in Vitest 4 |
 
 ### Pending Todos
 
@@ -76,5 +78,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 11-01-PLAN.md (Phase 11, 1/2 plans done)
+Stopped at: Completed 11-02-PLAN.md (Phase 11 complete, v1.1 milestone complete)
 Resume file: None

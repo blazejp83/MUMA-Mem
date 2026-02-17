@@ -11,7 +11,7 @@ None
 ## Milestones
 
 - ✅ **v1.0 MVP** — Phases 1-5 (shipped 2026-02-15)
-- 🚧 **v1.1 Integration** — Phases 6-11 (in progress)
+- ✅ **v1.1 Integration** — Phases 6-11 (shipped 2026-02-17)
 
 ## Completed Milestones
 
@@ -30,7 +30,7 @@ None
 
 </details>
 
-### 🚧 v1.1 Integration (In Progress)
+### ✅ v1.1 Integration (Shipped 2026-02-17)
 
 **Milestone Goal:** Align MUMA-Mem's plugin layer with the actual OpenClaw plugin SDK — fix hook signatures, tool registration, CLI bridge, and add integration tests.
 
@@ -84,7 +84,7 @@ Plans:
 Plans:
 - [x] 10-01: Hook extensions (session_start, before_compaction, before_reset + L1 capture in after_tool_call) -- completed 2026-02-17
 
-#### Phase 11: Integration Tests -- In Progress
+#### Phase 11: Integration Tests -- Complete
 
 **Goal**: Mock OpenClawPluginApi and test full lifecycle — registration, hooks, tools, userId derivation
 **Depends on**: Phase 8, Phase 9, Phase 10
@@ -93,7 +93,7 @@ Plans:
 
 Plans:
 - [x] 11-01: Registration and tool factory integration tests (mock API, 9 hooks, 10 tools, CLI, tool shape) -- completed 2026-02-17
-- [ ] 11-02: TBD
+- [x] 11-02: Hook lifecycle integration tests (gateway start/stop, session hooks) -- completed 2026-02-17
 
 ## Progress
 
@@ -112,4 +112,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Tool Factory | v1.1 | 1/1 | Complete | 2026-02-16 |
 | 9. CLI Bridge | v1.1 | 1/1 | Complete | 2026-02-17 |
 | 10. Hook Extensions | v1.1 | 1/1 | Complete | 2026-02-17 |
-| 11. Integration Tests | v1.1 | 1/2 | In progress | - |
+| 11. Integration Tests | v1.1 | 2/2 | Complete | 2026-02-17 |
