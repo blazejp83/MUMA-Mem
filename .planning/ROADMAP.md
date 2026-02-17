@@ -12,7 +12,7 @@ None
 
 - ✅ **v1.0 MVP** — Phases 1-5 (shipped 2026-02-15)
 - ✅ **v1.1 Integration** — Phases 6-11 (shipped 2026-02-17)
-- **v1.2 Identity** — Phase 12
+- ✅ **v1.2 Identity** — Phase 12 (shipped 2026-02-17)
 
 ## Completed Milestones
 
@@ -96,11 +96,11 @@ Plans:
 - [x] 11-01: Registration and tool factory integration tests (mock API, 9 hooks, 10 tools, CLI, tool shape) -- completed 2026-02-17
 - [x] 11-02: Hook lifecycle integration tests (gateway start/stop, session hooks) -- completed 2026-02-17
 
-### v1.2 Identity
+### ✅ v1.2 Identity (Shipped 2026-02-17)
 
 **Milestone Goal:** Allow multiple channel identities to share one memory store — cross-channel identity mapping.
 
-#### Phase 12: Cross-Channel Identity Mapping
+#### Phase 12: Cross-Channel Identity Mapping -- Complete
 
 **Goal**: Allow multiple channel identities to share one memory store
 **Depends on**: Phase 11
@@ -108,7 +108,7 @@ Plans:
 **Plans**: 1
 
 Plans:
-- [ ] 12-01: Cross-channel identity mapping (config + derive functions + wiring)
+- [x] 12-01: Cross-channel identity mapping (config + derive functions + wiring) -- completed 2026-02-17
 
 ## Progress
 
@@ -128,4 +128,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 9. CLI Bridge | v1.1 | 1/1 | Complete | 2026-02-17 |
 | 10. Hook Extensions | v1.1 | 1/1 | Complete | 2026-02-17 |
 | 11. Integration Tests | v1.1 | 2/2 | Complete | 2026-02-17 |
-| 12. Cross-Channel Identity Mapping | v1.2 | 0/0 | Not Started | - |
+| 12. Cross-Channel Identity Mapping | v1.2 | 1/1 | Complete | 2026-02-17 |

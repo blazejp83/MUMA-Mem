@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Agents automatically receive the right memories at the right time without explicit tool calls — scoped by visibility and domain, decayed by relevance, and consolidated from episodes into durable knowledge.
-**Current focus:** v1.1 Integration complete — plugin layer aligned with OpenClaw SDK
+**Current focus:** v1.2 Identity complete — cross-channel identity mapping
 
 ## Current Position
 
-Phase: 11 of 11 (Integration Tests)
-Plan: 2 of 2 in current phase
+Phase: 12 of 12 (Cross-Channel Identity Mapping)
+Plan: 1 of 1 in current phase
 Status: Phase complete
-Last activity: 2026-02-17 - Completed 11-02-PLAN.md
+Last activity: 2026-02-17 - Completed 12-01-PLAN.md
 
-Progress: ██████████ 100%
+Progress: ██████████ 29/29 plans (v1.2 complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 28
+- Total plans completed: 29
 - Average duration: 4 min
-- Total execution time: 104 min
+- Total execution time: 107 min
 
 **By Phase:**
 
@@ -38,6 +38,7 @@ Progress: ██████████ 100%
 | 9. CLI Bridge | 1/1 | 1 min | 1 min |
 | 10. Hook Extensions | 1/1 | 2 min | 2 min |
 | 11. Integration Tests | 2/2 | 7 min | 4 min |
+| 12. Cross-Channel Identity | 1/1 | 3 min | 3 min |
 
 ## Accumulated Context
 
@@ -62,10 +63,12 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes marked
 | 11 | vi.mock all heavy deps at module level in integration tests | Isolates registration-time from runtime behavior; avoids loading real store/embedding/LLM |
 | 11 | vi.hoisted() for mock objects in lifecycle tests | Vitest hoists vi.mock factories; top-level variables not accessible without vi.hoisted |
 | 11 | Constructor function pattern for class mocks | vi.fn().mockImplementation not reliable for class constructors in Vitest 4 |
+| 12 | Reverse map built at registerPlugin() time | O(1) runtime lookup; config-time validation of duplicates |
+| 12 | Optional parameter on derive functions | Full backward compatibility; no breaking changes to existing callsites |
 
 ### Pending Todos
 
-1. **Cross-channel identity mapping** — allow multiple channel identities to share one memory store (`.planning/todos/pending/2026-02-17-cross-channel-identity-mapping.md`)
+None.
 
 ### Blockers/Concerns
 
@@ -74,9 +77,10 @@ None.
 ### Roadmap Evolution
 
 - Milestone v1.1 Integration created: OpenClaw SDK alignment, 6 phases (Phase 6-11)
+- Milestone v1.2 Identity created: Phase 12 added — cross-channel identity mapping
 
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 11-02-PLAN.md (Phase 11 complete, v1.1 milestone complete)
+Stopped at: Completed 12-01-PLAN.md (Phase 12 complete, v1.2 milestone complete)
 Resume file: None
