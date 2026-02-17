@@ -65,7 +65,7 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes marked
 
 ### Pending Todos
 
-None.
+1. **Cross-channel identity mapping** — allow multiple channel identities to share one memory store (`.planning/todos/pending/2026-02-17-cross-channel-identity-mapping.md`)
 
 ### Blockers/Concerns
 
