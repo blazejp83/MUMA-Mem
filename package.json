@@ -22,6 +22,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
+  "openclaw": {
+    "extensions": ["./dist/index.js"]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
