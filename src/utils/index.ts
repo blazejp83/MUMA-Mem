@@ -1,1 +1,1 @@
-export { deriveUserId, deriveUserIdFromMessageCtx } from "./deriveUserId.js";
+export { buildReverseIdentityMap, deriveUserId, deriveUserIdFromMessageCtx } from "./deriveUserId.js";

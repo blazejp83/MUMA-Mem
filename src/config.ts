@@ -92,6 +92,7 @@ export const MumaConfigSchema = z.object({
   visibility: VisibilityConfigSchema.default(() => VisibilityConfigSchema.parse({})),
   agentMemory: z.record(z.string(), AgentMemoryProfileSchema).default({}),
   defaultAgentMemory: DefaultAgentMemorySchema.default(() => DefaultAgentMemorySchema.parse({})),
+  identityMap: z.record(z.string(), z.array(z.string())).optional(),
 });
 
 export type MumaConfig = z.infer<typeof MumaConfigSchema>;
