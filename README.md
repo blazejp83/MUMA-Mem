@@ -11,6 +11,8 @@ Agents automatically receive the right memories at the right time without explic
 - **Decayed** by Ebbinghaus adaptive half-life forgetting
 - **Consolidated** from episodes into durable knowledge via nightly "sleep cycles"
 
+For a detailed explanation of each technique and the research behind it, see [docs/RESEARCH.md](docs/RESEARCH.md).
+
 ### Memory Layers
 
 | Layer | Scope | Purpose |
