@@ -7,7 +7,7 @@ import type {
 import { deriveUserId } from "../utils/index.js";
 import { write } from "../pipeline/write.js";
 import { search } from "../pipeline/read.js";
-import { getStore, getWorkingMemory, getTransactiveIndex, getConfig, getEmbeddingProvider, getLLMProvider } from "../plugin.js";
+import { getStore, getWorkingMemory, getTransactiveIndex, getConfig, getEmbeddingProvider, getLLMProvider, getReverseIdentityMap } from "../plugin.js";
 import { resolveAgentProfile, canAgentSeeNote } from "../access/index.js";
 import { consolidate } from "../consolidation/consolidate.js";
 import { distillMemoryMd, writeMemoryMdFile } from "../consolidation/distill.js";
@@ -46,7 +46,7 @@ export function registerTools(api: OpenClawPluginApi): void {
   api.registerTool(
     (ctx: OpenClawPluginToolContext): AgentTool[] => {
       // Derive userId and agentId from factory context — captured in closure
-      const userId = deriveUserId(ctx.sessionKey);
+      const userId = deriveUserId(ctx.sessionKey, getReverseIdentityMap());
       const agentId = ctx.agentId ?? "unknown";
 
       return [

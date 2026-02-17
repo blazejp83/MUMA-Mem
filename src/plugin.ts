@@ -34,7 +34,7 @@ import type {
   PluginHookGatewayStopEvent,
   PluginHookGatewayContext,
 } from "./types/openclaw.js";
-import { deriveUserId, deriveUserIdFromMessageCtx } from "./utils/index.js";
+import { buildReverseIdentityMap, deriveUserId, deriveUserIdFromMessageCtx } from "./utils/index.js";
 import * as os from "node:os";
 import * as path from "node:path";
 
@@ -48,6 +48,9 @@ let transactiveIndex: TransactiveMemoryIndex | null = null;
 let filesystemSync: FilesystemSync | null = null;
 let sweepCleanup: (() => void) | null = null;
 let consolidationCleanup: (() => void) | null = null;
+
+// Cross-channel identity mapping: channel identity → canonical userId
+let reverseIdentityMap: Map<string, string> = new Map();
 
 // Per-session L1 working memory stores
 const sessions: Map<string, WorkingMemory> = new Map();
@@ -107,6 +110,10 @@ export function getTransactiveIndex(): TransactiveMemoryIndex | null {
   return transactiveIndex;
 }
 
+export function getReverseIdentityMap(): Map<string, string> {
+  return reverseIdentityMap;
+}
+
 export function registerPlugin(api: OpenClawPluginApi): void {
   // Parse and validate config
   const rawConfig = api.pluginConfig ?? {};
@@ -114,6 +121,9 @@ export function registerPlugin(api: OpenClawPluginApi): void {
 
   // Store config as module-level singleton for access by other modules
   mumaConfig = config;
+
+  // Build reverse identity map for cross-channel identity resolution
+  reverseIdentityMap = buildReverseIdentityMap(config.identityMap);
 
   // Register agent tools via factory pattern (PLUG-06 + PLUG-07)
   // With the factory pattern, registerTool just registers the factory —
@@ -221,7 +231,7 @@ export function registerPlugin(api: OpenClawPluginApi): void {
       if (!store || !embeddingProvider) return;
 
       const sessionId: string | undefined = ctx.sessionId;
-      const userId: string = deriveUserId(ctx.sessionKey);
+      const userId: string = deriveUserId(ctx.sessionKey, reverseIdentityMap);
       const agentId: string | undefined = ctx.agentId;
 
       if (!agentId) return;
@@ -274,7 +284,7 @@ export function registerPlugin(api: OpenClawPluginApi): void {
     if (!sessionId) return;
 
     const agentId = ctx.agentId ?? "unknown";
-    const userId = deriveUserId(undefined); // session_end ctx has no sessionKey; "default" fallback is acceptable
+    const userId = deriveUserId(undefined, reverseIdentityMap); // session_end ctx has no sessionKey; "default" fallback is acceptable
 
     const wm = sessions.get(sessionId);
     if (!wm) return;
@@ -410,7 +420,7 @@ export function registerPlugin(api: OpenClawPluginApi): void {
     if (!event.content || event.content.length < 20) return;
 
     // Derive userId from message context (channelId + accountId)
-    const userId = deriveUserIdFromMessageCtx(ctx);
+    const userId = deriveUserIdFromMessageCtx(ctx, reverseIdentityMap);
 
     // Note: L1 working memory capture not possible here —
     // message_received context has no sessionId or agentId.
@@ -446,7 +456,7 @@ export function registerPlugin(api: OpenClawPluginApi): void {
     const content = `Tool ${event.toolName} returned: ${resultStr.substring(0, 500)}`;
 
     // Derive userId and agentId from context
-    const userId = deriveUserId(ctx.sessionKey);
+    const userId = deriveUserId(ctx.sessionKey, reverseIdentityMap);
     const agentId = ctx.agentId ?? "unknown";
 
     // L1: Add to working memory if session is active
@@ -481,12 +491,13 @@ export function registerPlugin(api: OpenClawPluginApi): void {
   api.on("gateway_stop", async (_event: PluginHookGatewayStopEvent, _ctx: PluginHookGatewayContext) => {
     api.logger.info("[muma-mem] Shutting down...");
 
-    // Clear all working memory sessions and sessionKey→sessionId mapping
+    // Clear all working memory sessions, sessionKey→sessionId mapping, and identity map
     for (const wm of sessions.values()) {
       wm.clear();
     }
     sessions.clear();
     sessionKeyToId.clear();
+    reverseIdentityMap = new Map();
 
     // Stop decay sweep scheduler
     if (sweepCleanup) {

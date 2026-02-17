@@ -29,6 +29,7 @@ vi.mock("../plugin.js", () => ({
   }),
   getEmbeddingProvider: vi.fn(),
   getLLMProvider: vi.fn(),
+  getReverseIdentityMap: vi.fn().mockReturnValue(new Map()),
 }));
 
 // Mock pipeline modules
