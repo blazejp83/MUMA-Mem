@@ -5,6 +5,7 @@
  * without executing any real logic, enabling verification of the plugin
  * registration contract.
  */
+import { vi } from "vitest";
 import type {
   OpenClawPluginApi,
   OpenClawPluginToolFactory,
