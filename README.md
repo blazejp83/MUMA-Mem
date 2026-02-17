@@ -60,9 +60,9 @@ docker run -d --name redis-stack -p 6379:6379 redis/redis-stack:latest
 # No setup needed — creates ~/.openclaw/memory-muma.db automatically
 ```
 
-## Plugin Setup
+## Configuration
 
-After installation, configure in your `openclaw.json`:
+After installation, add MUMA-Mem to your `openclaw.json`:
 
 ```json
 {
@@ -91,69 +91,11 @@ After installation, configure in your `openclaw.json`:
 }
 ```
 
-The LLM config is optional — without it, the system runs without the write pipeline and consolidation.
+The LLM config is optional — without it, the system runs without the write pipeline and consolidation. The plugin ships with an `openclaw.plugin.json` manifest, so OpenClaw auto-discovers it from `node_modules` without extra path configuration.
 
-The plugin ships with an `openclaw.plugin.json` manifest, so OpenClaw auto-discovers it from `node_modules` without extra path configuration.
+All settings have sensible defaults. Override what you need in the `config` block. The `identityMap` option lets the same human using multiple channels (e.g. Telegram + Discord) share one memory store — keys are canonical user names, values are channel identities that resolve to them.
 
-## Configuration
-
-All settings have sensible defaults. Override what you need in the `config` block.
-
-The `identityMap` option lets the same human using multiple channels (e.g. Telegram + Discord) share one memory store. Keys are canonical user names, values are channel identities that resolve to them. Without it, each channel identity gets its own isolated memories.
-
-```json
-{
-  "redis": {
-    "url": "redis://localhost:6379",
-    "prefix": "muma:"
-  },
-  "sqlite": {
-    "path": "~/.openclaw/memory-muma.db"
-  },
-  "embedding": {
-    "provider": "local",
-    "model": "Xenova/all-MiniLM-L6-v2"
-  },
-  "llm": {
-    "provider": "openai",
-    "model": "gpt-4o-mini",
-    "apiKey": "sk-...",
-    "temperature": 0.7,
-    "maxTokens": 1024
-  },
-  "activation": {
-    "contextWeight": 11.0,
-    "noiseStddev": 1.2,
-    "decayParameter": 0.5,
-    "retrievalThreshold": 0.0
-  },
-  "decay": {
-    "sweepIntervalMinutes": 60,
-    "pruneThreshold": -2.0,
-    "hardPruneThreshold": -5.0,
-    "minAgeHours": 72,
-    "maxAgeHours": 720
-  },
-  "visibility": {
-    "defaultVisibility": "scoped",
-    "domainRules": {
-      "finance": "private",
-      "health": "user-only"
-    },
-    "domainBoost": 1.0
-  },
-  "identityMap": {
-    "alice": ["telegram:12345", "discord:98765"],
-    "bob": ["slack:U456"]
-  },
-  "agentMemory": {
-    "code-agent": {
-      "domains": ["code", "devops"],
-      "canSeePrivate": false
-    }
-  }
-}
-```
+For a full reference of every config variable, defaults, and valid values, see [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
 
 ## Agent Tools
 
