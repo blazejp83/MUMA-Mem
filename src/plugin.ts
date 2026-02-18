@@ -181,15 +181,17 @@ export function registerPlugin(api: OpenClawPluginApi): void {
     api.logger.info("[muma-mem] Transactive memory index initialized.");
 
     // 7. Start filesystem sync for human-readable memory files (SYNC-01)
-    try {
-      const syncDir = path.join(os.homedir(), "clawd", "memory");
-      filesystemSync = new FilesystemSync(syncDir);
-      await filesystemSync.start(store, eventBus);
-      await filesystemSync.initialSync(store);
-      api.logger.info(`[muma-mem] Filesystem sync: ${syncDir}`);
-    } catch (err) {
-      api.logger.warn(`[muma-mem] Filesystem sync init failed (non-fatal): ${err}`);
-      // Filesystem sync is optional — system works without it
+    if (config.sync.enabled) {
+      try {
+        const syncDir = config.sync.path ?? path.join(os.homedir(), ".openclaw", "memory");
+        filesystemSync = new FilesystemSync(syncDir);
+        await filesystemSync.start(store, eventBus);
+        await filesystemSync.initialSync(store);
+        api.logger.info(`[muma-mem] Filesystem sync: ${syncDir}`);
+      } catch (err) {
+        api.logger.warn(`[muma-mem] Filesystem sync init failed (non-fatal): ${err}`);
+        // Filesystem sync is optional — system works without it
+      }
     }
 
     // 8. Start decay sweep scheduler (FORGET-05)

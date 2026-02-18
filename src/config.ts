@@ -79,6 +79,13 @@ const DefaultAgentMemorySchema = z.object({
   canSeePrivate: z.boolean().default(false),
 });
 
+// --- Filesystem sync config ---
+
+const SyncConfigSchema = z.object({
+  enabled: z.boolean().default(true),
+  path: z.string().optional(),
+});
+
 // --- Top-level config ---
 // Use factory functions for .default() so Zod v4 resolves inner defaults at parse time.
 
@@ -90,6 +97,7 @@ export const MumaConfigSchema = z.object({
   activation: ActivationConfigSchema.default(() => ActivationConfigSchema.parse({})),
   decay: DecayConfigSchema.default(() => DecayConfigSchema.parse({})),
   visibility: VisibilityConfigSchema.default(() => VisibilityConfigSchema.parse({})),
+  sync: SyncConfigSchema.default(() => SyncConfigSchema.parse({})),
   agentMemory: z.record(z.string(), AgentMemoryProfileSchema).default({}),
   defaultAgentMemory: DefaultAgentMemorySchema.default(() => DefaultAgentMemorySchema.parse({})),
   identityMap: z.record(z.string(), z.array(z.string())).optional(),
