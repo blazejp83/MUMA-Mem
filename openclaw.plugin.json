@@ -69,6 +69,13 @@
           "domainBoost": { "type": "number", "default": 1.0 }
         }
       },
+      "sync": {
+        "type": "object",
+        "properties": {
+          "enabled": { "type": "boolean", "default": true },
+          "path": { "type": "string", "description": "Directory for human-readable memory files. Defaults to ~/.openclaw/memory" }
+        }
+      },
       "agentMemory": {
         "type": "object",
         "additionalProperties": {
