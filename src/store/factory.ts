@@ -4,8 +4,11 @@ import { RedisMemoryStore } from "./redis.js";
 import { SQLiteMemoryStore } from "./sqlite.js";
 
 export async function createStore(config: MumaConfig): Promise<MemoryStore> {
-  // Try Redis first (full features)
-  if (config.redis?.url) {
+  // Only try Redis if explicitly configured (non-default URL)
+  const defaultRedisUrl = "redis://localhost:6379";
+  const redisExplicit = config.redis?.url && config.redis.url !== defaultRedisUrl;
+
+  if (redisExplicit) {
     try {
       const store = new RedisMemoryStore(config.redis, config.embedding.dimensions);
       await store.initialize();
