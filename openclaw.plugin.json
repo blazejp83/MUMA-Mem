@@ -93,6 +93,14 @@
           "domains": { "type": "array", "items": { "type": "string" }, "default": ["*"] },
           "canSeePrivate": { "type": "boolean", "default": false }
         }
+      },
+      "identityMap": {
+        "type": "object",
+        "description": "Maps canonical user names to their platform-specific identifiers for cross-platform identity resolution",
+        "additionalProperties": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
       }
     }
   },
